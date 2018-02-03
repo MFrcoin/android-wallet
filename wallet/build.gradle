@@ -1,13 +1,14 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 23
+    compileSdkVersion 26
+    buildToolsVersion '26.0.2'
 
 
     defaultConfig {
         applicationId "com.coinomi.wallet.dev"
-        minSdkVersion 10
-        targetSdkVersion 23
+        minSdkVersion 14
+        targetSdkVersion 26
         versionCode 56
         versionName "v1.6.3"
         javaCompileOptions {
@@ -56,9 +57,12 @@ dependencies {
 //    androidTestCompile 'org.robolectric:robolectric:2.3'
 //    androidTestCompile 'com.squareup:fest-android:1.0.+'
     compile project(':core')
-    compile 'com.android.support:gridlayout-v7:23.3.0'
+    /*compile 'com.android.support:gridlayout-v7:23.3.0'
     compile 'com.android.support:support-v4:23.3.0'
-    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:appcompat-v7:23.3.0'*/
+    compile 'com.android.support:appcompat-v7:26.1.0'
+    compile 'com.android.support:design:26.1.0'
+    compile 'com.android.support:support-v4:26.1.0'
 //    compile 'com.android.support:preference-v7:23.2.1'
     compile 'com.google.guava:guava:16.0.1'
     compile 'com.google.code.findbugs:jsr305:2.0.1'
