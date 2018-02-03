@@ -1,0 +1,27 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".WalletActivity" >
+
+    <item android:id="@+id/action_scan_qr_code"
+        android:title="@string/action_scan_qr_code"
+        android:icon="@drawable/qr_code_menu"
+        app:showAsAction="ifRoom" />
+
+    <item android:id="@+id/action_refresh_wallet"
+        android:title="@string/action_refresh"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/action_sign_verify_message"
+        android:title="@string/action_sign_verify_message"
+        android:visible="false"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/action_account_details"
+        android:title="@string/action_account_details"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/action_sweep_wallet"
+        android:title="@string/action_sweep_wallet"
+        app:showAsAction="never" />
+</menu>

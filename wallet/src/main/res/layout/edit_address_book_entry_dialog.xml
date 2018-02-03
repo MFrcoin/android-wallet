@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
+    android:scrollbars="none" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dialog_margin"
+        android:paddingBottom="@dimen/dialog_margin"
+        android:paddingLeft="@dimen/dialog_margin"
+        android:paddingRight="@dimen/dialog_margin"
+        android:orientation="vertical" >
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/NormalText"
+            android:text="@string/edit_address_book_entry_dialog_address_label" />
+
+        <EditText
+            android:id="@+id/edit_address_book_entry_address"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/NormalText"
+            android:enabled="false"
+            android:focusable="false"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="none"
+            android:textColor="@color/fg_less_significant" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/NormalText"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/edit_address_book_entry_dialog_label_label" />
+
+        <EditText
+            android:id="@+id/edit_address_book_entry_label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/NormalText"
+            android:imeOptions="flagNoExtractUi"
+            android:inputType="text"
+            android:singleLine="true" >
+
+            <requestFocus />
+        </EditText>
+    </LinearLayout>
+</ScrollView>
