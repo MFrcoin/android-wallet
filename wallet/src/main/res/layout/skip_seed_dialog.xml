@@ -25,9 +25,9 @@
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:gravity="center"
-            tools:text="deliver broken make enrich core vendor ski help sock spy purse roast token jewel female"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textColor="@color/primary_900" />
+            android:textColor="@color/primary_900"
+            tools:text="deliver broken make enrich core vendor ski help sock spy purse roast token jewel female" />
 
         <TextView
             android:layout_width="wrap_content"
