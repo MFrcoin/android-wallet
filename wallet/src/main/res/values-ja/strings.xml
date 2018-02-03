@@ -6,7 +6,7 @@
     <string name="action_edit_label">ラベル編集</string>
     <string name="action_empty_wallet">ウォレットを空にする</string>
     <string name="action_settings">設定</string>
-    <string name="action_about">MFCoinについて</string>
+    <string name="action_about">Coinomiについて</string>
     <string name="action_refresh">更新</string>
     <string name="action_sign_verify_message">メッセージの署名と検証</string>
     <string name="action_account_details">アカウント詳細</string>
@@ -63,13 +63,11 @@
     <string name="trade">両替</string>
     <string name="receive">受け取る</string>
     <!-- Welcome fragment -->
-    <string name="welcome_text">MFCoinウォレットへようこそ</string>
+    <string name="welcome_text">Coinomiウォレットへようこそ</string>
     <string name="create_wallet">新しいウォレットを作成する</string>
     <string name="restore_wallet">ウォレットを復旧する</string>
     <string name="test_wallet">ウォレットをテストする</string>
     <!-- Intro -->
-    <string name="test_wallet_warning_title">テストウォレットを作成しますか？</string>
-    <string name="test_wallet_warning_message">新しいテストウォレットを作成すると、<i>復元フレーズ</i>をバックアップしていない場合には既存のウォレットは失われてしまいます。</string>
     <string name="incompatible_device_warning_title">互換性のない端末</string>
     <string name="incompatible_device_warning_message">この端末はソフトウェアもしくはハードウェアのバグにより、いくつかの暗号機能を実行できません。\nこれは端末の製造元によるアップデートにより解決できるかもしれません。\n\n何かご質問があれば support@coinomi.com までお問い合わせください。</string>
     <!-- Recovery fragment -->
@@ -91,7 +89,7 @@
     <!-- Wallet activity -->
     <string name="test_wallet_message">これはテストウォレットです。テストネットのBitcoin、Litecoin、Dogecoinを送ったり受け取ったりできます。\n\n本物のおかねを扱うことのできるウォレットを使いたい場合には、<b>設定 &gt; ウォレットを復旧する &gt; 新しいウォレットを作成する</b>を選択してください。</string>
     <string name="wallet_update_title">新しいバージョンが利用可能です。</string>
-    <string name="wallet_update_message">新しいバージョンのMFCoinが利用可能です。これには新しい機能やバグ修正が含まれます。</string>
+    <string name="wallet_update_message">新しいバージョンのCoinomiが利用可能です。これには新しい機能やバグ修正が含まれます。</string>
     <string name="pay_with">次のもので送金する：</string>
     <string name="exchange_and_pay_title">両替と送金</string>
     <!-- PayToDialog-->
@@ -133,15 +131,12 @@
     <string name="amount_error">入力された金額は無効です</string>
     <string name="amount_error_empty">金額を入力してください</string>
     <string name="amount_error_negative">負の金額を送ることはできません</string>
-    <string name="amount_error_decimal_places">小数の桁数が多すぎます。%1$d以下で指定してください</string>
     <string name="amount_error_too_small">最小の送金額は %1$s です</string>
     <string name="amount_error_not_enough_money_plain">おかねが足りません</string>
     <string name="amount_error_not_enough_money">おかねが足りません。現在の残高は %1$s です</string>
     <string name="amount_warn_fees_apply">手数料のために、実際の送金額はわずかに少なくなります</string>
     <!-- Set Password fragment -->
     <string name="set_password_info">日々の利用の際にウォレットを守るため、パスワードを設定します。</string>
-    <string name="set_password_seed_protect">復元フレーズにもパスワードをかける (BIP39)</string>
-    <string name="set_password_seed_protect_info">パスワードは変更不可能になり、復元フレーズを用いてウォレットを復旧する際にはパスワードが必要となります。\n警告：パスワードを忘れた場合にはウォレットの復旧は不可能となります！</string>
     <string name="set_password1">パスワードを入力してください</string>
     <string name="set_password2">パスワードをもう一度入力してください</string>
     <string name="password_too_common_error">パスワード \"%1$s\" は一般的なため、安全ではありません。</string>
@@ -174,9 +169,9 @@
         <item quantity="other">%d 秒</item>
     </plurals>
     <!-- About Activity -->
-    <string name="title_activity_about">MFCoinについて</string>
-    <string name="app_name_long">MFCoin for Android</string>
-    <string name="about_licence">オープンソース・プロジェクト\nhttps://github.com/coinomi/coinomi-android\nソースコードはGNU General Public License 3のもとでライセンスされています</string>
+    <string name="title_activity_about">Coinomiについて</string>
+    <string name="app_name_long">Coinomi for Android</string>
+    <string name="about_licence">オープンソース・プロジェクト\nhttps://github.com/Coinomi/coinomi-android\nソースコードはGNU General Public License 3のもとでライセンスされています</string>
     <string name="about_credits_nubits">サーバのインフラはNuBits - 世界初の安定したデジタル通貨 - の寄付により成り立っています\nhttps://nubits.com/</string>
     <string name="about_credits_translations">翻訳提供者:</string>
     <string name="about_credits_bitcoinj">Bitcoinjライブラリを使用しています\nhttp://bitcoinj.github.io/</string>

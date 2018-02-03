@@ -97,21 +97,6 @@
         <item name="android:background">@drawable/generic_red_circle</item>
     </style>
 
-    <!-- Thin progress bar -->
-    <!--<style name="ProgressBar" parent="SmoothProgressBar">-->
-        <!--<item name="spb_stroke_separator_length">16dp</item>-->
-        <!--<item name="spb_sections_count">3</item>-->
-        <!--<item name="spb_speed">1.0</item>-->
-        <!--<item name="spb_stroke_width">2dp</item>-->
-        <!--<item name="spb_progressiveStart_speed">2</item>-->
-        <!--<item name="spb_progressiveStop_speed">3.4</item>-->
-        <!--<item name="spb_interpolator">spb_interpolator_decelerate</item>-->
-        <!--<item name="spb_mirror_mode">true</item>-->
-        <!--<item name="spb_reversed">true</item>-->
-        <!--<item name="spb_colors">@array/progress_bar_colors</item>-->
-        <!--<item name="spb_progressiveStart_activated">false</item>-->
-    <!--</style>-->
-
     <!-- PagerTabStrip style -->
     <style name="PagerTabStrip" parent="NormalText">
         <item name="android:background">@color/actionbar_bg</item>
@@ -125,6 +110,9 @@
     <style name="AmountBig" parent="Amount">
         <item name="android:textSize">@dimen/amount_text_size_big</item>
     </style>
+    <style name="AmountSmall" parent="Amount">
+        <item name="android:textSize">@dimen/amount_text_size_small</item>
+    </style>
     <style name="AmountPending" parent="Amount">
         <item name="android:textSize">@dimen/amount_pending_text_size</item>
         <item name="android:textColor">@color/gray_26_hint_text</item>
@@ -134,6 +122,10 @@
     </style>
     <style name="AmountSymbolBig" parent="AmountSymbol">
         <item name="android:textSize">@dimen/amount_symbol_text_size</item>
+        <item name="android:singleLine">true</item>
+    </style>
+    <style name="AmountSymbolSmall" parent="AmountSymbol">
+        <item name="android:textSize">@dimen/amount_text_size_small</item>
         <item name="android:singleLine">true</item>
     </style>
 

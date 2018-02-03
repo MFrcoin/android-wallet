@@ -36,7 +36,7 @@
             android:layout_height="wrap_content"
             tools:text="US Dollar" />
 
-        <!--<mfcoinwallet.ui.widget.CurrencyTextView-->
+        <!--<com.coinomi.wallet.ui.widget.CurrencyTextView-->
             <!--android:id="@+id/exchange_rate_row_rate"-->
             <!--style="@style/ExchangeRowAmount"-->
             <!--android:layout_width="wrap_content"-->
@@ -47,7 +47,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical">
-            <com.mfcoin.wallet.ui.widget.Amount
+            <com.coinomi.wallet.ui.widget.Amount
                 android:id="@+id/exchange_rate_row_rate_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -60,7 +60,7 @@
                 android:layout_marginLeft="4dp"
                 android:text="@string/almost_equal_to"/>
 
-            <com.mfcoin.wallet.ui.widget.Amount
+            <com.coinomi.wallet.ui.widget.Amount
                 android:id="@+id/exchange_rate_row_rate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -3,9 +3,10 @@
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'com.android.tools.build:gradle:3.0.1'
 //        classpath 'org.robolectric:robolectric-gradle-plugin:0.11.+'
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -18,4 +19,8 @@ allprojects {
         mavenCentral()
         jcenter()
     }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
 }

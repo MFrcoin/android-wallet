@@ -63,13 +63,11 @@
     <string name="trade">交易所</string>
     <string name="receive">接收</string>
     <!-- Welcome fragment -->
-    <string name="welcome_text">欢迎使用MFCoin钱包</string>
+    <string name="welcome_text">欢迎使用Coinomi钱包</string>
     <string name="create_wallet">创建新钱包</string>
     <string name="restore_wallet">恢复钱包</string>
     <string name="test_wallet">测试钱包</string>
     <!-- Intro -->
-    <string name="test_wallet_warning_title">创建测试钱包？</string>
-    <string name="test_wallet_warning_message">如果你要创建一个新的测试钱包，你现有的钱包将会丢失，除非你已经备份了 <i>恢复钱包密码</i>.</string>
     <string name="incompatible_device_warning_title">设备不匹配</string>
     <string name="incompatible_device_warning_message">由于软件或硬件原因，此设备无法执行某些加密功能。\n可以通过设备生产商发布的更新来解决。\n\n如果有任何疑问，欢迎和我们联系：support@coinomi.com</string>
     <!-- Recovery fragment -->
@@ -91,7 +89,7 @@
     <!-- Wallet activity -->
     <string name="test_wallet_message">此为测试钱包，你可以发送及接受测试网络上的比特币、莱特币及狗狗币。\n\n如果你想使用主网上的币，请移步: <b>设置 &gt; 恢复钱包 &gt; 创建新钱包</b>.</string>
     <string name="wallet_update_title">新版本可供更新</string>
-    <string name="wallet_update_message">有新版本的MFCoin，其中包含新功能及修复bug.</string>
+    <string name="wallet_update_message">有新版本的Coinomi，其中包含新功能及修复bug.</string>
     <string name="pay_with">用发送</string>
     <string name="exchange_and_pay_title">换成并发送</string>
     <!-- PayToDialog-->
@@ -133,15 +131,12 @@
     <string name="amount_error">输入的金额无效。</string>
     <string name="amount_error_empty">请输入金额</string>
     <string name="amount_error_negative">无法发送负数金额。</string>
-    <string name="amount_error_decimal_places">太多小数点，尝试少于 %1$d</string>
-    <string name="amount_error_too_small">最低金额不少于 %1$s %2$s</string>
+    <string name="amount_error_too_small">最低金额不少于 %1$s</string>
     <string name="amount_error_not_enough_money_plain">余额不足</string>
     <string name="amount_error_not_enough_money">余额不足，目前余额为%1$s</string>
     <string name="amount_warn_fees_apply">因手续费实际发送的数量会稍微少一些。</string>
     <!-- Set Password fragment -->
     <string name="set_password_info">设置密码保护你的钱包。</string>
-    <string name="set_password_seed_protect">同时也保护种子。 (BIP39)</string>
-    <string name="set_password_seed_protect_info">密码是永久性的，而且在恢复钱包时也要用到。\n警告：如果密码丢失，则无法恢复钱包！</string>
     <string name="set_password1">输入密码</string>
     <string name="set_password2">再次输入密码</string>
     <string name="password_too_common_error">密码\"%1$s\" 太常见，不安全。</string>
@@ -176,7 +171,7 @@
     <!-- About Activity -->
     <string name="title_activity_about">关于我们</string>
     <string name="app_name_long">安卓版</string>
-    <string name="about_licence">开源项目\nhttps://github.com/coinomi/coinomi-android\n源码基于 GNU普通公众许可3开源</string>
+    <string name="about_licence">开源项目\nhttps://github.com/Coinomi/coinomi-android\n源码基于 GNU普通公众许可3开源</string>
     <string name="about_credits_nubits">服务器由Nubits提供-NBT是世界上首个价格稳定的数字货币\nhttps://nubits.com/</string>
     <string name="about_credits_translations">翻译者：</string>
     <string name="about_credits_bitcoinj">使用Bitcoinj库\nhttp://bitcoinj.github.io/</string>
