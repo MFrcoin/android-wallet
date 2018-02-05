@@ -8,6 +8,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,6 +22,7 @@ import com.coinomi.wallet.WalletApplication;
 import com.coinomi.wallet.util.Fonts;
 import com.coinomi.wallet.util.QrUtils;
 import com.coinomi.wallet.util.WeakHandler;
+import com.coinomi.wallet.util.UiUtils;
 
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.HDKeyDerivation;
@@ -91,6 +95,7 @@ public class ShowSeedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        setHasOptionsMenu(true);
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_show_seed, container, false);
 
@@ -116,6 +121,26 @@ public class ShowSeedFragment extends Fragment {
         updateView();
 
         return view;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.copy_share_options, menu);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle item selection
+        switch (item.getItemId()) {
+            case R.id.action_share:
+                UiUtils.share(getActivity(), seedInfo.seedString);
+                return true;
+            case R.id.action_copy:
+                UiUtils.copy(getActivity(), seedInfo.seedString);
+                return true;
+        }
+        return false;
     }
 
     private void showUnlockDialog() {
