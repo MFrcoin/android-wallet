@@ -41,7 +41,7 @@
     <style name="FontIconBig" parent="NormalText">
         <item name="android:textSize">@dimen/font_icon_text_size</item>
         <item name="android:textColor">@color/font_icon_fg_color</item>
-        <item name="android:background">@drawable/font_icon_bg</item>
+        <!--<item name="android:background">@mipmap/font_icon_bg</item>-->
         <item name="android:gravity">center_horizontal|center_vertical</item>
     </style>
 
@@ -90,11 +90,11 @@
     </style>
 
     <style name="GenericCircleGreen" parent="GenericCircle">
-        <item name="android:background">@drawable/generic_green_circle</item>
+        <item name="android:background">@mipmap/generic_green_circle</item>
     </style>
 
     <style name="GenericCircleRed" parent="GenericCircle">
-        <item name="android:background">@drawable/generic_red_circle</item>
+        <item name="android:background">@mipmap/generic_red_circle</item>
     </style>
 
     <!-- PagerTabStrip style -->

@@ -96,14 +96,14 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/scan_qr_code"
-                            android:src="@drawable/qr_code" />
+                            android:src="@mipmap/qr_code" />
 
                         <ImageButton
                             android:id="@+id/erase_address"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:contentDescription="@string/erase_address"
-                            android:src="@drawable/erase"
+                            android:src="@mipmap/erase"
                             android:visibility="gone"/>
                     </LinearLayout>
                 </RelativeLayout>

@@ -1,16 +1,16 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '27.0.3'
 
 
     defaultConfig {
         applicationId "com.coinomi.wallet.dev"
         minSdkVersion 14
-        targetSdkVersion 26
-        versionCode 56
-        versionName "v1.6.3"
+        targetSdkVersion 27
+        versionCode 3
+        versionName "v3.0.0"
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath = true
@@ -57,21 +57,22 @@ dependencies {
 //    androidTestCompile 'org.robolectric:robolectric:2.3'
 //    androidTestCompile 'com.squareup:fest-android:1.0.+'
     compile project(':core')
-    /*compile 'com.android.support:gridlayout-v7:23.3.0'
-    compile 'com.android.support:support-v4:23.3.0'
-    compile 'com.android.support:appcompat-v7:23.3.0'*/
-    compile 'com.android.support:appcompat-v7:26.1.0'
-    compile 'com.android.support:design:26.1.0'
-    compile 'com.android.support:support-v4:26.1.0'
-//    compile 'com.android.support:preference-v7:23.2.1'
+    compile 'com.android.support:support-v13:27.0.2'
+    compile 'com.android.support:appcompat-v7:27.0.2'
+    compile 'com.android.support:design:27.0.2'
+    //compile 'com.android.support:support-fragment:27.0.2'
+    compile 'com.android.support:support-v4-preferencefragment:1.0.0@aar'
+    //compile 'com.android.support:preference-v14:27.0.2'
+    //compile 'com.android.support:preference-v7:27.0.2'
+
     compile 'com.google.guava:guava:16.0.1'
     compile 'com.google.code.findbugs:jsr305:2.0.1'
     compile 'com.madgag.spongycastle:core:1.51.0.0'
     compile 'com.google.protobuf:protobuf-java:2.5.0'
     compile 'com.google.zxing:core:3.1.0'
     compile 'ch.acra:acra:4.8.5'
-    compile 'com.android.support:support-v4-preferencefragment:1.0.0@aar'
     compile 'com.jakewharton:butterknife:7.0.1'
+    compile group: 'org.apache.maven', name: 'maven-artifact', version: '3.0.3'
 }
 
 //apply plugin: 'robolectric'

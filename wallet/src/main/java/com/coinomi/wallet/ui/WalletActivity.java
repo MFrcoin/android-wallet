@@ -218,9 +218,9 @@ final public class WalletActivity extends BaseWalletActivity implements
     private void createNavDrawerItems() {
         navDrawerItems.clear();
         NavDrawerItem.addItem(navDrawerItems, ITEM_SECTION_TITLE, getString(R.string.navigation_drawer_services));
-        NavDrawerItem.addItem(navDrawerItems, ITEM_TRADE, getString(R.string.title_activity_trade), R.drawable.trade, null);
+        NavDrawerItem.addItem(navDrawerItems, ITEM_TRADE, getString(R.string.title_activity_trade), R.mipmap.trade, null);
         NavDrawerItem.addItem(navDrawerItems, ITEM_SECTION_TITLE, getString(R.string.navigation_drawer_wallet));
-        NavDrawerItem.addItem(navDrawerItems, ITEM_OVERVIEW, getString(R.string.title_activity_overview), R.drawable.ic_launcher, null);
+        NavDrawerItem.addItem(navDrawerItems, ITEM_OVERVIEW, getString(R.string.title_activity_overview), R.mipmap.ic_launcher, null);
         for (WalletAccount account : getAllAccounts()) {
             NavDrawerItem.addItem(navDrawerItems, ITEM_COIN, account.getDescriptionOrCoinName(),
                     Constants.COINS_ICONS.get(account.getCoinType()), account.getId());
@@ -394,11 +394,11 @@ final public class WalletActivity extends BaseWalletActivity implements
     private void checkAlerts() {
         // If not store version, show update dialog if needed
         if (!SystemUtils.isStoreVersion(this)) {
-            final PackageInfo packageInfo = getWalletApplication().packageInfo();
+            //final PackageInfo packageInfo = getWalletApplication().packageInfo();
             new CheckUpdateTask() {
                 @Override
                 protected void onPostExecute(Integer serverVersionCode) {
-                    if (serverVersionCode != null && serverVersionCode > packageInfo.versionCode) {
+                    if (serverVersionCode < 0) {
                         showUpdateDialog();
                     }
                 }
@@ -408,7 +408,7 @@ final public class WalletActivity extends BaseWalletActivity implements
 
     private void showUpdateDialog() {
 
-        if (true) return; // uncheck update SB$
+        //if (true) return; // uncheck update SB$
 
         final PackageManager pm = getPackageManager();
 //        final Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(String.format(Constants.MARKET_APP_URL, getPackageName())));

@@ -17,7 +17,7 @@
             android:layout_gravity="center_horizontal"
             android:layout_weight="3"
             android:padding="@dimen/standard_margin"
-            android:src="@drawable/intro_logo" />
+            android:src="@mipmap/intro_logo" />
 
         <TextView
             android:id="@+id/welcome_text"

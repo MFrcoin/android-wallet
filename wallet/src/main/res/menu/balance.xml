@@ -5,7 +5,7 @@
 
     <item android:id="@+id/action_scan_qr_code"
         android:title="@string/action_scan_qr_code"
-        android:icon="@drawable/qr_code_menu"
+        android:icon="@mipmap/qr_code_menu"
         app:showAsAction="ifRoom" />
 
     <item android:id="@+id/action_refresh_wallet"
