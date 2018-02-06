@@ -2,7 +2,7 @@
 <resources>
     <!-- http://www.google.com/design/spec/style/color.html#color-ui-color-application -->
     <color name="primary_100">#B3E5FC</color>
-    <color name="primary_500">#03A9F4</color>
+    <color name="primary_500">#21b8ba</color>
     <color name="primary_600">#039BE5</color>
     <color name="primary_700">#0288D1</color>
     <color name="primary_800">#0277BD</color>
