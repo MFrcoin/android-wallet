@@ -48,3 +48,8 @@
 -keepclasseswithmembernames class * {
     @butterknife.* <methods>;
 }
+
+-keepclassmembers enum * {
+    public static **[] values();
+    public static ** valueOf(java.lang.String);
+}
