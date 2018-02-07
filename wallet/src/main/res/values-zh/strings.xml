@@ -63,7 +63,7 @@
     <string name="trade">交易所</string>
     <string name="receive">接收</string>
     <!-- Welcome fragment -->
-    <string name="welcome_text">欢迎使用Coinomi钱包</string>
+    <string name="welcome_text">欢迎使用MFCoin钱包</string>
     <string name="create_wallet">创建新钱包</string>
     <string name="restore_wallet">恢复钱包</string>
     <string name="test_wallet">测试钱包</string>
