@@ -9,7 +9,7 @@ android {
         applicationId "com.coinomi.wallet.dev"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 5
+        versionCode 6
         versionName "v3.0.0"
         javaCompileOptions {
             annotationProcessorOptions {

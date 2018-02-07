@@ -17,6 +17,7 @@ Please see Build.md
 
 New in version 3.0.0
 - full re-design
+- change connect to electrum server
 - new coins
 - new buttons
 - Autoupdate system
