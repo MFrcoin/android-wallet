@@ -4,6 +4,6 @@
 
     <item android:id="@+id/action_change_address_type"
         android:title="@string/action_change_address_type"
-        android:icon="@mipmap/coins_menu"
+        android:icon="@drawable/coins_menu"
         app:showAsAction="ifRoom" />
 </menu>

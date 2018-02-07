@@ -18,7 +18,7 @@
         android:layout_height="@dimen/generic_icon_size"
         android:layout_marginRight="@dimen/half_standard_margin"
         android:layout_marginEnd="@dimen/half_standard_margin"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@drawable/newcoin"/>
 
     <TextView
         android:id="@+id/item_text"

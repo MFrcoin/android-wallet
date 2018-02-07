@@ -15,6 +15,6 @@
 
     <item android:id="@+id/action_edit_label"
         android:title="@string/action_edit_label"
-        android:icon="@mipmap/edit_menu"
+        android:icon="@drawable/edit_menu"
         app:showAsAction="ifRoom" />
 </menu>

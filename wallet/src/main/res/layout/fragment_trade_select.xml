@@ -115,13 +115,13 @@
                 android:baselineAligned="false"
                 android:orientation="horizontal">
 
-                <com.coinomi.wallet.ui.widget.AmountEditView
+                <com.mfcoin.wallet.ui.widget.AmountEditView
                     android:id="@+id/trade_coin_amount"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5" />
 
-                <com.coinomi.wallet.ui.widget.AmountEditView
+                <com.mfcoin.wallet.ui.widget.AmountEditView
                     android:id="@+id/receive_coin_amount"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -195,7 +195,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_alignTop="@+id/custom_receive_address"
                     android:contentDescription="@string/scan_qr_code"
-                    android:src="@mipmap/qr_code" />
+                    android:src="@drawable/qr_code" />
             </RelativeLayout>
         </LinearLayout>
 

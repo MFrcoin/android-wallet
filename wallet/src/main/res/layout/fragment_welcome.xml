@@ -1,9 +1,8 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.coinomi.wallet.ui.WelcomeFragment">
+    tools:context="com.mfcoin.wallet.ui.WelcomeFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,23 +11,13 @@
         android:orientation="vertical">
 
         <ImageView
-            android:id="@+id/imageView3"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="3"
-            android:paddingTop="16dp"
-            android:src="@drawable/intro_logo"
-            android:visibility="visible" />
-
-        <ImageView
             android:id="@+id/imageView"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_gravity="center_horizontal"
             android:layout_weight="3"
             android:padding="@dimen/standard_margin"
-            android:src="@mipmap/intro_logo"
-            android:visibility="gone" />
+            android:src="@drawable/intro_logo" />
 
         <TextView
             android:id="@+id/welcome_text"
@@ -61,6 +50,14 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:text="@string/restore_wallet" />
+
+            <Button
+                android:visibility="gone"
+                android:id="@+id/test_wallet"
+                android:layout_width="@dimen/intro_button_width"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="@string/test_wallet" />
         </LinearLayout>
     </LinearLayout>
 </FrameLayout>
