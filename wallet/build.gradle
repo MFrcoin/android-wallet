@@ -10,7 +10,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 6
-        versionName "v3.0.0"
+        versionName "v3.0.1"
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath = true
