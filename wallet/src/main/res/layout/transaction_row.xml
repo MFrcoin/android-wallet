@@ -23,7 +23,7 @@
             style="@style/TransactionRowDirectionFontIcon"
             android:layout_width="@dimen/transaction_row_direction_bg_size"
             android:layout_height="wrap_content"
-            android:background="@mipmap/transaction_row_circle_bg_pending"
+            android:background="@drawable/transaction_row_circle_bg_pending"
             android:gravity="center"
             android:layout_margin="@dimen/transaction_row_margin_direction"
             tools:text="[->" />
