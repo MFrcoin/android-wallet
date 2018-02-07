@@ -76,7 +76,7 @@
     <string name="trade">Exchange</string>
     <string name="receive">Receive</string>
     <!-- Welcome fragment -->
-    <string name="welcome_text">Welcome to Coinomi wallet</string>
+    <string name="welcome_text">Welcome to MFCoin wallet</string>
     <string name="create_wallet">Create a new wallet</string>
     <string name="restore_wallet">Restore a wallet</string>
     <string name="test_wallet">Test wallet</string>
@@ -203,6 +203,7 @@
     <!-- About Activity -->
     <string name="title_activity_about">About MFcoin wallet</string>
     <string name="app_name_long">MFCoin wallet</string>
+    <string name="project">MFCoin.net project</string>
     <string name="about_licence">An open source project\nhttps://github.com/MFrcoin/android-wallet based on Coinomi project</string>
     <string name="about_credits_nubits">Server infrastructure donated by NuBits - The World\'s First Stable Digital Currency\nhttps://nubits.com/</string>
     <string name="about_credits_translations">Translations provided by:</string>

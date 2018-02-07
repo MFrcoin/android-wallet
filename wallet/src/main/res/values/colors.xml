@@ -7,7 +7,7 @@
     <color name="primary_700">#0288D1</color>
     <color name="primary_800">#0277BD</color>
     <color name="primary_900">#01579B</color>
-    <color name="accent">#0091EA</color>
+    <color name="accent">#0091ea</color>
 
     <color name="send_light">#FFECB3</color>
     <color name="send_normal">#FF6F00</color>
@@ -46,7 +46,7 @@
     <color name="fg_insignificant">@color/gray_26_hint_text</color>
     <color name="fg_error">#ffe73519</color>
     <color name="fg_warning">@color/fg_error</color>
-    <color name="fg_ok">#ff6db10c</color>
+    <color name="fg_ok">#6db10c</color>
 
     <!-- background -->
     <color name="bg_bright">#ffffffff</color>
