@@ -8,41 +8,10 @@
     android:layout_height="match_parent"
     tools:context=".WalletActivity">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <FrameLayout
+        android:id="@+id/contents"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <!--<android.support.v7.widget.Toolbar-->
-            <!--android:id="@+id/toolbar"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:minHeight="?attr/actionBarSize"-->
-            <!--android:background="?attr/colorPrimary"-->
-            <!--app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"-->
-            <!--app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />-->
-
-        <android.support.v4.view.ViewPager
-            android:id="@+id/pager"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <!--
-            This title strip will display the currently visible page title, as well as the page
-            titles for adjacent pages.
-            -->
-            <android.support.v4.view.PagerTabStrip android:id="@+id/pager_title_strip"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="top"
-                style="@style/PagerTabStrip"
-                android:paddingTop="4dp"
-                android:paddingBottom="4dp" />
-
-        </android.support.v4.view.ViewPager>
-
-
-    </LinearLayout>
+        android:layout_height="match_parent" />
 
     <!-- android:layout_gravity="start" tells DrawerLayout to treat
          this as a sliding drawer on the left side for left-to-right
@@ -55,7 +24,7 @@
         android:layout_width="@dimen/navigation_drawer_width"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:name="com.mfcoin.wallet.ui.NavigationDrawerFragment"
+        android:name="com.coinomi.wallet.ui.NavigationDrawerFragment"
         tools:layout="@layout/fragment_navigation_drawer" />
 
 </android.support.v4.widget.DrawerLayout>

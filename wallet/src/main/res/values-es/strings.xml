@@ -68,10 +68,8 @@
     <string name="restore_wallet">Recuperar una billetera</string>
     <string name="test_wallet">Probar Cartera</string>
     <!-- Intro -->
-    <string name="test_wallet_warning_title">Crear una billetera de prueba</string>
-    <string name="test_wallet_warning_message">Si crea una nueva carpeta de prueba, se perderá su cartera existente, a menos que tenga una  copia de seguridad su <i>frase  de recuperación </i></string>
     <string name="incompatible_device_warning_title">Dispositivo incompatible</string>
-    <string name="incompatible_device_warning_message">Este dispositivo no puede realizar ciertas funciones criptográficas debido a errores de software o hardware.\nEsto se podría solucionar con una actualización del fabricante del dispositivo.\n\nPóngase en contacto con nosotros si tiene alguna pregunta: support@coinomi.com</string>
+    <string name="incompatible_device_warning_message">Este dispositivo no puede realizar ciertas funciones criptográficas debido a errores de software o hardware.\nEsto se podría solucionar con una actualización del fabricante del dispositivo.\n\nPóngase en contacto con nosotros si tiene alguna pregunta: support@mfcoin.net</string>
     <!-- Recovery fragment -->
     <string name="seed_info">Esta es su<i>frase de recuperación</i>, la que es usada para generar llaves para su billetera. Por favor escribala en un papel y mantengala en un logar seguro, como lo haría con el dinero de papel. Cualquiera con acceso a ella ,tiene acceso a los fondos en la billetera.\nSi usted pierde su frase de recuperación, su billetera no podrá ser recuperada .</string>
     <string name="seed_title">Su frase de recuperación</string>
@@ -133,19 +131,16 @@
     <string name="amount_error">El monto entrado no es válido</string>
     <string name="amount_error_empty">Por favor introduzca un monto</string>
     <string name="amount_error_negative">No se puede enviar un monto negativo</string>
-    <string name="amount_error_decimal_places">Demasiados cifras decimales, trate de menos de  %1$d</string>
-    <string name="amount_error_too_small">El monto mínimo es de al menos%1$s</string>
+    <string name="amount_error_too_small">El monto mínimo es de al menos %1$s</string>
     <string name="amount_error_not_enough_money_plain">Dinero insuficiente</string>
     <string name="amount_error_not_enough_money">No hay suficiente dinero, su saldo actual es de%1$s</string>
     <string name="amount_warn_fees_apply">Un poco menos se enviará por causa de las comisiones</string>
     <!-- Set Password fragment -->
     <string name="set_password_info">Establecer una contraseña para proteger su billetera durante el uso diario.</string>
-    <string name="set_password_seed_protect">También proteger mi frase de recuperación (BIP39)</string>
-    <string name="set_password_seed_protect_info">La contraseña se convierte en permanente y es necesariα al restaurar su billetera con la frase de recuperación.\nADVERTENCIA: Si olvida su contraseña, será imposible recuperar su billetera!</string>
     <string name="set_password1">Escriba su contraseña</string>
     <string name="set_password2">Reescriba su contraseña</string>
     <string name="password_too_common_error">La contraseña \"%1$s\" es muy común para ser utilizada de forma segura.</string>
-    <string name="password_too_short_error">La contraseña es demasiada corta,  %1$d es el minimo de caracteres</string>
+    <string name="password_too_short_error">La contraseña es demasiada corta, %1$d es el mínimo de caracteres</string>
     <string name="passwords_mismatch">Las contraseñas no coinciden</string>
     <string name="password_error">No se  ha podido continuar, errores detectados en la  contraseña.</string>
     <string name="password_skip_warn">Al no establecer una contraseña, su billeteras puede ser  accedida sin autorización.</string>
@@ -178,7 +173,7 @@
     <!-- About Activity -->
     <string name="title_activity_about">Acerca de MFCoin</string>
     <string name="app_name_long">MFCoin para Android</string>
-    <string name="about_licence">Un proyecto de código abierto\nhttps://github.com/coinomi/coinomi-android\nCódigo fuente bajo licencia GNU General Public License 3</string>
+    <string name="about_licence">Un proyecto de código abierto\nhttps://github.com/MFrcoin/android-wallet\nCódigo fuente bajo licencia GNU General Public License 3</string>
     <string name="about_credits_nubits">Infraestructura de servidor donado por NuBits - Primera moneda digital estable del mundo\nhttps://nubits.com/</string>
     <string name="about_credits_translations">Traducciones proporcionadas por:</string>
     <string name="about_credits_bitcoinj">Utiliza la biblioteca Bitcoinj\nhttp://bitcoinj.github.io/</string>

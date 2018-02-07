@@ -1,5 +1,5 @@
 <!--<LinearLayout -->
-    <!--xmlns:mfcoin="http://schemas.android.com/apk/res-auto"-->
+    <!--xmlns:coinomi="http://schemas.android.com/apk/res-auto"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="match_parent"-->
     <!--android:orientation="vertical"-->
@@ -9,7 +9,7 @@
     <!---->
 
 <!--</LinearLayout>-->
-<com.mfcoin.wallet.ui.widget.SendOutput
+<com.coinomi.wallet.ui.widget.SendOutput
 xmlns:android="http://schemas.android.com/apk/res/android"
 android:id="@+id/transaction_output"
 android:layout_width="match_parent"

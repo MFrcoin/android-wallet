@@ -68,7 +68,7 @@
         android:layout_toEndOf="@id/exchange_status_icons"
         android:layout_below="@id/exchange_status_text"
         android:gravity="center_vertical">
-        <com.mfcoin.wallet.ui.widget.Amount
+        <com.coinomi.wallet.ui.widget.Amount
             android:id="@+id/exchange_deposit"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -83,14 +83,14 @@
             android:text="@string/font_icon_arrow_right"
             tools:text="->"/>
 
-        <com.mfcoin.wallet.ui.widget.Amount
+        <com.coinomi.wallet.ui.widget.Amount
             android:id="@+id/exchange_withdraw"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             coinomi:single_line="true" />
     </LinearLayout>
 
-    <com.mfcoin.wallet.ui.widget.AddressView
+    <com.coinomi.wallet.ui.widget.AddressView
         android:id="@+id/withdraw_address"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

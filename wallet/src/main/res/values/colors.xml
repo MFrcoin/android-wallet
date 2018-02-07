@@ -2,12 +2,12 @@
 <resources>
     <!-- http://www.google.com/design/spec/style/color.html#color-ui-color-application -->
     <color name="primary_100">#B3E5FC</color>
-    <color name="primary_500">#03A9F4</color>
+    <color name="primary_500">#21b8ba</color>
     <color name="primary_600">#039BE5</color>
     <color name="primary_700">#0288D1</color>
     <color name="primary_800">#0277BD</color>
     <color name="primary_900">#01579B</color>
-    <color name="accent">#0091EA</color>
+    <color name="accent">#0091ea</color>
 
     <color name="send_light">#FFECB3</color>
     <color name="send_normal">#FF6F00</color>
@@ -46,7 +46,7 @@
     <color name="fg_insignificant">@color/gray_26_hint_text</color>
     <color name="fg_error">#ffe73519</color>
     <color name="fg_warning">@color/fg_error</color>
-    <color name="fg_ok">#ff6db10c</color>
+    <color name="fg_ok">#6db10c</color>
 
     <!-- background -->
     <color name="bg_bright">#ffffffff</color>
@@ -64,11 +64,12 @@
     <color name="scan_result_view">#b0000000</color>
     <color name="scan_result_dots">#c099cc00</color>
 
-    <!-- progress bar -->
-    <integer-array name="progress_bar_colors">
-        <item>@color/primary_600</item>
-        <item>@color/primary_700</item>
-        <item>@color/primary_800</item>
-    </integer-array>
+    <color name="progress_bar_color_1">#7986CB</color>
+    <color name="progress_bar_color_2">#FFD54F</color>
+    <color name="progress_bar_color_3">#E57373</color>
+    <color name="progress_bar_color_4">#AED581</color>
+
+    <!-- QR code -->
+    <color name="qr_code_normal_bg">#00000000</color>
 
 </resources>
