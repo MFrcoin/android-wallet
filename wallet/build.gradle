@@ -10,7 +10,7 @@ android {
         minSdkVersion 14
         targetSdkVersion 27
         versionCode 6
-        versionName "v3.0.1"
+        versionName "v3.0.2"
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath = true
@@ -62,6 +62,7 @@ dependencies {
     compile 'com.android.support:design:27.0.2'
     //compile 'com.android.support:support-fragment:27.0.2'
     compile 'com.android.support:support-v4-preferencefragment:1.0.0@aar'
+    compile 'com.google.android.gms:play-services-auth:11.8.0'
     //compile 'com.android.support:preference-v14:27.0.2'
     //compile 'com.android.support:preference-v7:27.0.2'
 
