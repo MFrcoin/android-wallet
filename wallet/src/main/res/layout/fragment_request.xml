@@ -112,13 +112,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
 
-                    <com.coinomi.wallet.ui.widget.AmountEditView
+                    <com.mfcoin.wallet.ui.widget.AmountEditView
                         android:id="@+id/request_coin_amount"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="0.5" />
 
-                    <com.coinomi.wallet.ui.widget.AmountEditView
+                    <com.mfcoin.wallet.ui.widget.AmountEditView
                         android:id="@+id/request_local_amount"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"

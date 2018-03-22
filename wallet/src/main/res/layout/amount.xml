@@ -15,7 +15,7 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <com.coinomi.wallet.ui.widget.FontFitTextView
+        <com.mfcoin.wallet.ui.widget.FontFitTextView
             android:id="@+id/amount_text"
             style="@style/Amount"
             android:layout_width="wrap_content"

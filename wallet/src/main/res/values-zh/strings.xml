@@ -305,4 +305,27 @@
     <string name="account_private_key_label">私钥</string>
     <string name="account_extended_private_key_label">延展私钥</string>
     <string name="account_private_key_warning">私钥可以让你从此帐户中发送资金。没有必要备份这个私钥，因为其可以通过  <i>恢复钱包密码</i> 重新生成。</string>
+    <string name="action_sweep_wallet">Sweep wallet</string>
+    <string name="action_support">Contact support</string>
+    <string name="error_camera">Could not access the device camera</string>
+    <string name="button_default">Default</string>
+    <string name="button_execute">Execute</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="wallet_is_not_locked_message">Your wallet is not locked</string>
+    <string name="override_wallet_warning_title">Override existing wallet?</string>
+    <string name="override_new_wallet_warning_message">If you create a new wallet, your existing wallet will be lost unless you backed up you <i>recovery phrase</i>.</string>
+    <string name="override_restore_wallet_warning_message">If you restore a wallet, your existing wallet will be lost unless you backed up you <i>recovery phrase</i>.</string>
+    <string name="received_from">received from</string>
+    <string name="set_bip39_passphrase">Type your BIP39 passphrase</string>
+    <string name="project">MFCoin.net project</string>
+    <string name="edit_account_title">Edit account</string>
+    <string name="edit_account_description_label">Description</string>
+    <string name="edit_account_delete_title">Remove account %1$s?</string>
+    <string name="edit_account_delete_description">This removes the account from the wallet but it is still possible to re-add it and recover the coins.</string>
+    <string name="title_activity_debugging">Debugging</string>
+    <string name="debugging_info">You can use a collection of tools to debug various issues with your wallet.</string>
+    <string name="debugging_test_wallet_password">Wallet unlocking tests</string>
+    <string name="debugging_test_wallet_password_results">Unlocked wallet: %1$s  Fingerprints Input: %2$s Key: %3$s</string>
+    <string name="title_activity_overview">Overview</string>
 </resources>

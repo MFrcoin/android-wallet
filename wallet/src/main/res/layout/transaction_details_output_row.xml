@@ -9,7 +9,7 @@
     <!---->
 
 <!--</LinearLayout>-->
-<com.coinomi.wallet.ui.widget.SendOutput
+<com.mfcoin.wallet.ui.widget.SendOutput
 xmlns:android="http://schemas.android.com/apk/res/android"
 android:id="@+id/transaction_output"
 android:layout_width="match_parent"

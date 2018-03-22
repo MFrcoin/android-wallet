@@ -6,11 +6,11 @@ android {
 
 
     defaultConfig {
-        applicationId "com.coinomi.wallet.dev"
+        applicationId "com.mfcoin.wallet.dev"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 6
-        versionName "v3.0.2"
+        versionCode 8
+        versionName "v3.1.0"
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath = true
@@ -26,6 +26,12 @@ android {
         debug {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    configurations {
+        all {
+            exclude group: 'org.json', module: 'json'
         }
     }
 

@@ -368,37 +368,37 @@
     <string name="account_extended_private_key_label">Extended private key</string>
     <string name="account_private_key_warning">The private key allows you to send coins from this account. It is not necessary to backup this key as it is derived from your <i>recovery phrase</i></string>
     <!-- Support -->
-    <string name="support_message">Contact MFCoin support</string>
+    <string name="support_message" translatable="false">Contact MFCoin support</string>
     <!-- Sweep wallet -->
     <!-- Sweep paper wallet means to redeem coins from a code usually printed on a paper -->
-    <string name="title_activity_sweep_wallet">Sweep paper wallet</string>
-    <string name="sweep_wallet_info">You are about to transfer coins from a paper wallet to your MFCoin wallet.\nAfter the transfer is complete, please avoid reusing the paper wallet for security reasons.\n\nSupported formats: WIF, BIP38, Mini private key.</string>
-    <string name="sweep_wallet_key_title">Private key</string>
-    <string name="sweep_wallet_key_password">Private key password</string>
-    <string name="sweep_wallet_key_hint">type or scan a private key</string>
-    <string name="sweep_wallet_bad_format">Could not recognize the private key format.</string>
-    <string name="sweep_wallet_bad_coin_type">The private key type does not match the destination account type.</string>
-    <string name="sweep_wallet_bad_password">Incorrect password.</string>
-    <string name="sweep_wallet_zero_coins">The private key does not contain any funds.</string>
-    <string name="sweep_wallet_key_wait">Please wait while sweeping your paper wallet</string>
+    <string name="title_activity_sweep_wallet" translatable="false">Sweep paper wallet</string>
+    <string name="sweep_wallet_info" translatable="false">You are about to transfer coins from a paper wallet to your MFCoin wallet.\nAfter the transfer is complete, please avoid reusing the paper wallet for security reasons.\n\nSupported formats: WIF, BIP38, Mini private key.</string>
+    <string name="sweep_wallet_key_title" translatable="false">Private key</string>
+    <string name="sweep_wallet_key_password" translatable="false">Private key password</string>
+    <string name="sweep_wallet_key_hint" translatable="false">type or scan a private key</string>
+    <string name="sweep_wallet_bad_format" translatable="false">Could not recognize the private key format.</string>
+    <string name="sweep_wallet_bad_coin_type" translatable="false">The private key type does not match the destination account type.</string>
+    <string name="sweep_wallet_bad_password" translatable="false">Incorrect password.</string>
+    <string name="sweep_wallet_zero_coins" translatable="false">The private key does not contain any funds.</string>
+    <string name="sweep_wallet_key_wait" translatable="false">Please wait while sweeping your paper wallet</string>
     <!-- &#8230; is the ... character -->
-    <string name="sweep_wallet_key_decoding">Decoding private key&#8230;</string>
+    <string name="sweep_wallet_key_decoding" translatable="false">Decoding private key&#8230;</string>
     <!-- &#8230; is the ... character -->
-    <string name="sweep_wallet_key_loading">Loading balance&#8230;</string>
+    <string name="sweep_wallet_key_loading" translatable="false">Loading balance&#8230;</string>
     <!-- &#8230; is the ... character -->
-    <string name="sweep_wallet_key_signing">Creating transaction&#8230;</string>
+    <string name="sweep_wallet_key_signing" translatable="false">Creating transaction&#8230;</string>
     <!-- Fees settings -->
-    <string name="title_activity_transaction_fees">Transaction fees</string>
+    <string name="title_activity_transaction_fees" translatable="false">Transaction fees</string>
     <!-- Example: Bitcoin transaction fees-->
-    <string name="tx_fees_title">%1$s transaction fees</string>
+    <string name="tx_fees_title" translatable="false">%1$s transaction fees</string>
     <!-- Example: The fee value is per kilobyte.-->
-    <string name="tx_fees_description">The fee value is %1$s.</string>
-    <string name="tx_fees_per_kilobyte">per kilobyte of transaction data</string>
-    <string name="tx_fees_per_byte">per byte of transaction data</string>
-    <string name="tx_fees_per_transaction">per transaction</string>
+    <string name="tx_fees_description" translatable="false">The fee value is %1$s.</string>
+    <string name="tx_fees_per_kilobyte" translatable="false">per kilobyte of transaction data</string>
+    <string name="tx_fees_per_byte" translatable="false">per byte of transaction data</string>
+    <string name="tx_fees_per_transaction" translatable="false">per transaction</string>
 
     <!-- Terms -->
-    <string name="terms_of_service_title">Terms of service</string>
+    <string name="terms_of_service_title" translatable="false">Terms of service</string>
     <!-- TODO translate to other languages -->
     <string name="terms_of_service" translatable="false">LEGAL DISCLAIMER\n
 \n
