@@ -15,6 +15,12 @@ Please see Build.md
 
 ## Version history
 
+New in version 3.1.0
+- ready for Google Play
+
+New in version 3.0.2
+- Bug fix for old phones
+
 New in version 3.0.0
 - full re-design
 - change connect to electrum server
