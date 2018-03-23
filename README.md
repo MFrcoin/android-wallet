@@ -15,8 +15,9 @@ Please see Build.md
 
 ## Version history
 
-New in version 3.1.0
+New in version 3.1.1
 - ready for Google Play
+- bug fixes
 
 New in version 3.0.2
 - Bug fix for old phones

@@ -139,7 +139,7 @@
             android:theme="@style/AppTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.WalletActivity" />
+                android:value="com.mfcoin.wallet.ui.WalletActivity" />
         </activity>
         <activity
             android:name=".ui.AddCoinsActivity"
@@ -160,7 +160,7 @@
             android:theme="@style/AppTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.WalletActivity" />
+                android:value="com.mfcoin.wallet.ui.SettingsActivity" />
         </activity>
         <activity
             android:name=".ui.PreviousAddressesActivity"
@@ -173,7 +173,7 @@
             android:theme="@style/AppTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.WalletActivity" />
+                android:value="com.mfcoin.wallet.ui.WalletActivity" />
         </activity>
         <activity
             android:name=".ui.ShowSeedActivity"
@@ -181,7 +181,7 @@
             android:theme="@style/AppTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.SettingsActivity" />
+                android:value="com.mfcoin.wallet.ui.SettingsActivity" />
         </activity>
         <activity
             android:name=".ui.TradeActivity"
@@ -225,7 +225,7 @@
             android:theme="@style/AppTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.SettingsActivity" />
+                android:value="com.mfcoin.wallet.ui.SettingsActivity" />
         </activity>
         <activity
             android:name=".ui.DebuggingActivity"
@@ -233,7 +233,7 @@
             android:theme="@style/AppTheme" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.SettingsActivity" />
+                android:value="com.mfcoin.wallet.ui.SettingsActivity" />
         </activity>
 
         <provider
