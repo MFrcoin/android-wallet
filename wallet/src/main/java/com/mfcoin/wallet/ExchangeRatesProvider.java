@@ -28,6 +28,7 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
+import android.util.Log;
 
 import com.mfcoin.core.coins.CoinID;
 import com.mfcoin.core.coins.CoinType;
@@ -37,6 +38,7 @@ import com.mfcoin.core.util.ExchangeRateBase;
 import com.mfcoin.wallet.util.NetworkUtils;
 import com.google.common.collect.ImmutableMap;
 import com.squareup.okhttp.OkHttpClient;
+import com.squareup.okhttp.Protocol;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
@@ -48,6 +50,7 @@ import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -102,7 +105,14 @@ public class ExchangeRatesProvider extends ContentProvider {
     private static final String BASE_URL = "https://ticker.coinomi.net/simple";
     private static final String TO_LOCAL_URL = BASE_URL + "/to-local/%s";
     private static final String TO_CRYPTO_URL = BASE_URL + "/to-crypto/%s";
+
+    private final String MFC_SYMBOL = "MFC";
+    private final String MFC_RATES_URL = "https://api.mfc-market.ru";
+    private final String MFC_TOLOCAL_URL = MFC_RATES_URL + "/ticker_local";
+    private final String MFC_TOCRYPTO_URL = MFC_RATES_URL + "/ticker_crypto";
+
     private static final String COINOMI_SOURCE = "coinomi.com";
+    private static final String MFCMARKET_SOURCE = "mfc-market.ru";
 
     private static final Logger log = LoggerFactory.getLogger(ExchangeRatesProvider.class);
 
@@ -221,17 +231,32 @@ public class ExchangeRatesProvider extends ContentProvider {
 
         if (!offline && (lastUpdated == 0 || now - lastUpdated > Constants.RATE_UPDATE_FREQ_MS)) {
             URL url;
+            URL mfcUrl;
             try {
                 if (isLocalToCrypto) {
                     url = new URL(String.format(TO_CRYPTO_URL, symbol));
+                    mfcUrl = new URL(MFC_TOLOCAL_URL);
                 } else {
                     url = new URL(String.format(TO_LOCAL_URL, symbol));
+                    mfcUrl = new URL(MFC_TOCRYPTO_URL);
                 }
             } catch (final MalformedURLException x) {
                 throw new RuntimeException(x); // Should not happen
             }
 
             JSONObject newExchangeRatesJson = requestExchangeRatesJson(url);
+
+            JSONObject mfcExchangeRatesJson = requestExchangeRatesJson(mfcUrl);
+            String mfcRate = mfcExchangeRatesJson.optString(symbol, null);
+            if (mfcRate != null && newExchangeRatesJson != null) {
+                try {
+                    newExchangeRatesJson.put(MFC_SYMBOL, mfcRate);
+                }
+                catch (JSONException ex) {
+                    log.warn("Exception while adding MFC rate", ex);
+                }
+            }
+
             Map<String, ExchangeRate> newExchangeRates =
                     parseExchangeRates(newExchangeRatesJson, symbol, isLocalToCrypto);
 
@@ -326,6 +351,7 @@ public class ExchangeRatesProvider extends ContentProvider {
         final long start = System.currentTimeMillis();
 
         OkHttpClient client = NetworkUtils.getHttpClient(getContext().getApplicationContext());
+        client.setProtocols(Arrays.asList(Protocol.HTTP_1_1));
         Request request = new Request.Builder().url(url).build();
 
         try {
@@ -382,4 +408,5 @@ public class ExchangeRatesProvider extends ContentProvider {
             return rates;
         }
     }
+
 }
