@@ -15,6 +15,9 @@ Please see Build.md
 
 ## Version history
 
+New in version 3.2.0
+- USD rate for MFC
+
 New in version 3.1.1
 - ready for Google Play
 - bug fixes

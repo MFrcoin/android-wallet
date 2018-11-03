@@ -9,8 +9,8 @@ android {
         applicationId "com.mfcoin.wallet.dev"
         minSdkVersion 14
         targetSdkVersion 27
-        versionCode 9
-        versionName "v3.1.1"
+        versionCode 10
+        versionName "v3.2.0"
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath = true
