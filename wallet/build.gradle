@@ -1,21 +1,36 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 27
-    buildToolsVersion '27.0.3'
+    compileSdkVersion 28
+    buildToolsVersion '28.0.3'
 
 
     defaultConfig {
         applicationId "com.mfcoin.wallet.dev"
         minSdkVersion 14
-        targetSdkVersion 27
-        versionCode 10
-        versionName "v3.2.0"
+        targetSdkVersion 28
+        versionCode 11
+        versionName "v3.2.1"
         javaCompileOptions {
             annotationProcessorOptions {
                 includeCompileClasspath = true
             }
         }
+    }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'x86', 'armeabi-v7a'
+            universalApk true
+        }
+    }
+
+    packagingOptions {
+        exclude 'lib/x86_64/darwin/libscrypt.dylib'
+        exclude 'lib/x86_64/freebsd/libscrypt.so'
+        exclude 'lib/x86_64/linux/libscrypt.so'
     }
 
     buildTypes {
@@ -56,30 +71,30 @@ repositories {
 //}
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile fileTree(dir: '../core/libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: '../core/libs', include: ['*.jar'])
     // Testing
 //    androidTestCompile 'junit:junit:4.11'
 //    androidTestCompile 'org.robolectric:robolectric:2.3'
 //    androidTestCompile 'com.squareup:fest-android:1.0.+'
-    compile project(':core')
-    compile 'com.android.support:support-v13:27.0.2'
-    compile 'com.android.support:appcompat-v7:27.0.2'
-    compile 'com.android.support:design:27.0.2'
+    implementation project(':core')
+    implementation 'com.android.support:support-v13:28.0.0'
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support:design:28.0.0'
     //compile 'com.android.support:support-fragment:27.0.2'
-    compile 'com.android.support:support-v4-preferencefragment:1.0.0@aar'
-    compile 'com.google.android.gms:play-services-auth:11.8.0'
+    implementation 'com.android.support:support-v4-preferencefragment:1.0.0@aar'
+    implementation 'com.google.android.gms:play-services-auth:11.8.0'
     //compile 'com.android.support:preference-v14:27.0.2'
     //compile 'com.android.support:preference-v7:27.0.2'
 
-    compile 'com.google.guava:guava:16.0.1'
-    compile 'com.google.code.findbugs:jsr305:2.0.1'
-    compile 'com.madgag.spongycastle:core:1.51.0.0'
-    compile 'com.google.protobuf:protobuf-java:2.5.0'
-    compile 'com.google.zxing:core:3.1.0'
-    compile 'ch.acra:acra:4.8.5'
-    compile 'com.jakewharton:butterknife:7.0.1'
-    compile group: 'org.apache.maven', name: 'maven-artifact', version: '3.0.3'
+    implementation 'com.google.guava:guava:16.0.1'
+    implementation 'com.google.code.findbugs:jsr305:2.0.1'
+    implementation 'com.madgag.spongycastle:core:1.51.0.0'
+    implementation 'com.google.protobuf:protobuf-java:2.5.0'
+    implementation 'com.google.zxing:core:3.1.0'
+    implementation 'ch.acra:acra:4.8.5'
+    implementation 'com.jakewharton:butterknife:7.0.1'
+    implementation group: 'org.apache.maven', name: 'maven-artifact', version: '3.0.3'
 }
 
 //apply plugin: 'robolectric'

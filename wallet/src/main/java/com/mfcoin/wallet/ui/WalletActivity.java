@@ -219,8 +219,8 @@ final public class WalletActivity extends BaseWalletActivity implements
 
     private void createNavDrawerItems() {
         navDrawerItems.clear();
-        NavDrawerItem.addItem(navDrawerItems, ITEM_SECTION_TITLE, getString(R.string.navigation_drawer_services));
-        NavDrawerItem.addItem(navDrawerItems, ITEM_TRADE, getString(R.string.title_activity_trade), R.mipmap.trade, null);
+//        NavDrawerItem.addItem(navDrawerItems, ITEM_SECTION_TITLE, getString(R.string.navigation_drawer_services));
+//        NavDrawerItem.addItem(navDrawerItems, ITEM_TRADE, getString(R.string.title_activity_trade), R.mipmap.trade, null);
         NavDrawerItem.addItem(navDrawerItems, ITEM_SECTION_TITLE, getString(R.string.navigation_drawer_wallet));
         NavDrawerItem.addItem(navDrawerItems, ITEM_OVERVIEW, getString(R.string.title_activity_overview), R.mipmap.ic_launcher, null);
         for (WalletAccount account : getAllAccounts()) {
@@ -395,6 +395,7 @@ final public class WalletActivity extends BaseWalletActivity implements
 
     private void checkAlerts() {
         // If not store version, show update dialog if needed
+        showForkDialog();
         if (!SystemUtils.isStoreVersion(this)) {
             //final PackageInfo packageInfo = getWalletApplication().packageInfo();
             new CheckUpdateTask() {
@@ -444,6 +445,27 @@ final public class WalletActivity extends BaseWalletActivity implements
                 }
             });
         }
+
+        builder.setNegativeButton(R.string.button_dismiss, null);
+        builder.create().show();
+    }
+
+    private void showForkDialog() {
+
+        final Intent binaryIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.FORK_URL));
+
+        final AlertDialog.Builder builder = new AlertDialog.Builder(WalletActivity.this);
+        builder.setTitle(R.string.wallet_fork_title);
+        builder.setMessage(R.string.wallet_fork_message);
+
+
+        builder.setPositiveButton(R.string.button_next, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(final DialogInterface dialog, final int id) {
+                    startActivity(binaryIntent);
+                    finish();
+            }
+            });
 
         builder.setNegativeButton(R.string.button_dismiss, null);
         builder.create().show();

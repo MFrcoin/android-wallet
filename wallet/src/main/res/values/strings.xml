@@ -108,6 +108,9 @@
     <string name="wallet_update_message">A new version of MFCoin wallet is available, it contains new features and fixes.</string>
     <string name="pay_with">Send with</string>
     <string name="exchange_and_pay_title">Exchange and send</string>
+    <!-- Wallet fork -->
+    <string name="wallet_fork_title">MFC will hardfork at 0:00 UTC Oct 01, 2019</string>
+    <string name="wallet_fork_message">Waiting for update this wallet and do not send MFC from an unrenewed wallet after 1 Oct 2019 avoid losing coins. Please read detailed information about hardfork.</string>
     <!-- PayToDialog-->
     <!-- Ambiguous address means that the wallet cannot deduce the correct address coin type -->
     <string name="ambiguous_address_title">Ambiguous address</string>

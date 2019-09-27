@@ -123,6 +123,7 @@ public class Constants {
 
     public static final String MARKET_APP_URL = "market://details?id=%s";
     public static final String BINARY_URL = "https://github.com/MFrcoin/android-wallet/releases";
+    public static final String FORK_URL = "https://mfcoin.net/hardfork";
 
     public static final String VERSION_URL = "https://api.github.com/repos/MFrcoin/android-wallet/releases/latest";
     public static final String SUPPORT_EMAIL = "support@mfcoin.net";
