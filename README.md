@@ -1,4 +1,4 @@
-MjW9CTXaAtL5r1RSff4zEeh5dDqFwXfGD9MFCoin wallet (based on Coinomi Wallet)
+MFCoin wallet (based on Coinomi Wallet)
 ===============
 
 Our goal is to support every cryptocurrency with an active development team. Store all the best cryptocurrency through a single app, without sacrificing security. Private keys are stored on your own device. Instead of having one backup file for every coin, you get a master key that can be memorized or stored on a piece of paper. Restore all wallets from a single recovery phrase.
