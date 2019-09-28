@@ -337,6 +337,6 @@
     <string name="debugging_test_wallet_password">Wallet unlocking tests</string>
     <string name="debugging_test_wallet_password_results">Unlocked wallet: %1$s</string>
     <string name="title_activity_overview">Overview</string>
-    <string name="wallet_fork_message">Ожидайте обновления этого кошелька и не отправляйте MFC из необновленного кошелька после 1 октября 2019, чтобы не потерять монеты. Пожалуйста, прочитайте подробную информацию о хардфорке.</string>
-    <string name="wallet_fork_title">1 Октября 2019 в 0:00 UTC состоится хардфорк сети MFC</string>
+    <string name="wallet_fork_message">Ваши монеты будут сохранены. Храните надежно свою восстанавливающую фразу. Пожалуйста, ждите обновления этого кошелька. Транзакции после 1 октября 2019 года с необновленного кошелька будут недействительны. Не могли бы вы прочитать подробную информацию о хардфорке?</string>
+    <string name="wallet_fork_title">1 Октября 2019 состоится харфорк сети MFC</string>
 </resources>

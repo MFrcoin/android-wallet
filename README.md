@@ -15,10 +15,12 @@ Please see Build.md
 
 ## Version history
 
-New in version 3.2.1
+New in version 3.2.1-3.2.2
 - hide exchange menu
 - alert hardfork
 - update gradle settings
+- add 64 bit support 
+- bug fixes
 
 New in version 3.2.0
 - USD rate for MFC

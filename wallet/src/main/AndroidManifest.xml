@@ -102,7 +102,6 @@
                 <data android:scheme="auroracoin" />
                 <data android:scheme="bata" />
                 <data android:scheme="okcash" />
-                <data android:scheme="asiacoin" />
                 <data android:scheme="egulden" />
                 <data android:scheme="clubcoin" />
                 <data android:scheme="richcoin" />

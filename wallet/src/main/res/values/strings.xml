@@ -110,7 +110,7 @@
     <string name="exchange_and_pay_title">Exchange and send</string>
     <!-- Wallet fork -->
     <string name="wallet_fork_title">MFC will hardfork at 0:00 UTC Oct 01, 2019</string>
-    <string name="wallet_fork_message">Waiting for update this wallet and do not send MFC from an unrenewed wallet after 1 Oct 2019 avoid losing coins. Please read detailed information about hardfork.</string>
+    <string name="wallet_fork_message">Your coins will be save. Keep recovery phrase. Please waiting for update this wallet. Transactions after 1 Oct 2019 from an unrenewed wallet will be invalid. Please read detailed information about hardfork.</string>
     <!-- PayToDialog-->
     <!-- Ambiguous address means that the wallet cannot deduce the correct address coin type -->
     <string name="ambiguous_address_title">Ambiguous address</string>

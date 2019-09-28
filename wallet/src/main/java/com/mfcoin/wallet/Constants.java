@@ -2,7 +2,6 @@ package com.mfcoin.wallet;
 
 import android.text.format.DateUtils;
 
-import com.mfcoin.core.coins.AsiacoinMain;
 import com.mfcoin.core.coins.AuroracoinMain;
 import com.mfcoin.core.coins.BatacoinMain;
 import com.mfcoin.core.coins.BitcoinMain;
@@ -211,8 +210,6 @@ public class Constants {
                                                     new ServerAddress("bata-cce-1.coinomi.net", 5042)),
             new CoinAddress(OKCashMain.get(),       new ServerAddress("ok-cce-1.coinomi.net", 5043),
                                                     new ServerAddress("ok-cce-2.coinomi.net", 5043)),
-            new CoinAddress(AsiacoinMain.get(),     new ServerAddress("ac-cce-1.coinomi.net", 5044),
-                                                    new ServerAddress("ac-cce-2.coinomi.net", 5044)),
             new CoinAddress(ClubcoinMain.get(),     new ServerAddress("club-cce-1.coinomi.net", 5045),
                                                     new ServerAddress("club-cce-2.coinomi.net", 5045)),
             new CoinAddress(RichcoinMain.get(),     new ServerAddress("richx-cce-1.coinomi.net", 5046),
@@ -264,7 +261,6 @@ public class Constants {
         COINS_ICONS.put(CoinID.GULDEN_MAIN.getCoinType(), R.mipmap.gulden);
         COINS_ICONS.put(CoinID.AURORACOIN_MAIN.getCoinType(), R.mipmap.auroracoin);
         COINS_ICONS.put(CoinID.BATACOIN_MAIN.getCoinType(), R.mipmap.batacoin);
-        COINS_ICONS.put(CoinID.ASIACOIN_MAIN.getCoinType(), R.mipmap.asiacoin);
         COINS_ICONS.put(CoinID.EGULDEN_MAIN.getCoinType(), R.mipmap.egulden);
         COINS_ICONS.put(CoinID.CLUBCOIN_MAIN.getCoinType(), R.mipmap.clubcoin);
         COINS_ICONS.put(CoinID.RICHCOIN_MAIN.getCoinType(), R.mipmap.richcoin);
@@ -307,7 +303,6 @@ public class Constants {
         COINS_BLOCK_EXPLORERS.put(CoinID.GULDEN_MAIN.getCoinType(), "https://explorer.gulden.com/#/transaction/%s");
         COINS_BLOCK_EXPLORERS.put(CoinID.AURORACOIN_MAIN.getCoinType(), "http://insight.auroracoin.io/tx/%s");
         COINS_BLOCK_EXPLORERS.put(CoinID.BATACOIN_MAIN.getCoinType(), "https://chainz.cryptoid.info/bta/tx.dws?%s");
-        COINS_BLOCK_EXPLORERS.put(CoinID.ASIACOIN_MAIN.getCoinType(), "https://chainz.cryptoid.info/ac/tx.dws?%s.htm");
         COINS_BLOCK_EXPLORERS.put(CoinID.EGULDEN_MAIN.getCoinType(), "https://chainz.cryptoid.info/efl/tx.dws?%s");
         COINS_BLOCK_EXPLORERS.put(CoinID.RICHCOIN_MAIN.getCoinType(), "https://explorer.richcoin.us/transaction?transaction=%s");
         COINS_BLOCK_EXPLORERS.put(CoinID.IXCOIN_MAIN.getCoinType(), "https://chainz.cryptoid.info/ixc/tx.dws?%s");
@@ -325,7 +320,6 @@ public class Constants {
     public static final List<CoinType> SUPPORTED_COINS = ImmutableList.of(
             MfcoinMain.get(),
             BitcoinMain.get(),
-            AsiacoinMain.get(),
             AuroracoinMain.get(),
             BatacoinMain.get(),
             BlackcoinMain.get(),

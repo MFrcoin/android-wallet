@@ -60,7 +60,6 @@ public enum CoinID {
     AURORACOIN_MAIN(AuroracoinMain.get()),
     BATACOIN_MAIN(BatacoinMain.get()),
     OKCASH_MAIN(OKCashMain.get()),
-    ASIACOIN_MAIN(AsiacoinMain.get()),
     EGULDEN_MAIN(EguldenMain.get()),
     CLUBCOIN_MAIN(ClubcoinMain.get()),
     RICHCOIN_MAIN(RichcoinMain.get()),

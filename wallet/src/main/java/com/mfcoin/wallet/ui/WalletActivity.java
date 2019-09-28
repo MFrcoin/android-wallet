@@ -459,7 +459,7 @@ final public class WalletActivity extends BaseWalletActivity implements
         builder.setMessage(R.string.wallet_fork_message);
 
 
-        builder.setPositiveButton(R.string.button_next, new DialogInterface.OnClickListener() {
+        builder.setPositiveButton(R.string.button_ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(final DialogInterface dialog, final int id) {
                     startActivity(binaryIntent);
