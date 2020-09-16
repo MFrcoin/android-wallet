@@ -107,7 +107,7 @@ public class ExchangeRatesProvider extends ContentProvider {
     private static final String TO_CRYPTO_URL = BASE_URL + "/to-crypto/%s";
 
     private final String MFC_SYMBOL = "MFC";
-    private final String MFC_RATES_URL = "https://api.mfc-market.ru";
+    private final String MFC_RATES_URL = "https://explorer.mfcoin.net/api/stats/cmcdata";
     private final String MFC_TOLOCAL_URL = MFC_RATES_URL + "/ticker_local";
     private final String MFC_TOCRYPTO_URL = MFC_RATES_URL + "/ticker_crypto";
 
@@ -247,13 +247,15 @@ public class ExchangeRatesProvider extends ContentProvider {
             JSONObject newExchangeRatesJson = requestExchangeRatesJson(url);
 
             JSONObject mfcExchangeRatesJson = requestExchangeRatesJson(mfcUrl);
-            String mfcRate = mfcExchangeRatesJson.optString(symbol, null);
-            if (mfcRate != null && newExchangeRatesJson != null) {
-                try {
-                    newExchangeRatesJson.put(MFC_SYMBOL, mfcRate);
-                }
-                catch (JSONException ex) {
-                    log.warn("Exception while adding MFC rate", ex);
+            if (mfcExchangeRatesJson != null) {
+                String mfcRate = mfcExchangeRatesJson.optString(symbol, null);
+                if (mfcRate != null && newExchangeRatesJson != null) {
+                    try {
+                        newExchangeRatesJson.put(MFC_SYMBOL, mfcRate);
+                    }
+                    catch (JSONException ex) {
+                        log.warn("Exception while adding MFC rate", ex);
+                    }
                 }
             }
 

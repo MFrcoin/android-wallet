@@ -30,12 +30,17 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.spongycastle.util.encoders.Hex;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -56,13 +61,14 @@ public class ServerClient implements BitBlockchainConnection {
     private static final Logger log = LoggerFactory.getLogger(ServerClient.class);
 
     private static final ScheduledThreadPoolExecutor connectionExec;
-    private static final String CLIENT_PROTOCOL = "0.9";
+    private static final String CLIENT_PROTOCOL = "1.4.1";
 
     static {
         connectionExec = new ScheduledThreadPoolExecutor(1);
         // FIXME, causing a crash in old Androids
 //        connectionExec.setRemoveOnCancelPolicy(true);
     }
+
     private static final Random RANDOM = new Random();
 
     private static final long MAX_WAIT = 16;
@@ -191,7 +197,7 @@ public class ServerClient implements BitBlockchainConnection {
     }
 
     public void startAsync() {
-        if (stratumClient == null){
+        if (stratumClient == null) {
             log.info("Forcing service start");
             connectionExec.remove(reconnectTask);
             createStratumClient();
@@ -310,8 +316,19 @@ public class ServerClient implements BitBlockchainConnection {
         }
     }
 
-    private BlockHeader parseBlockHeader(CoinType type, JSONObject json) throws JSONException {
-        return new BlockHeader(type, json.getLong("timestamp"), json.getInt("block_height"));
+    private BlockHeader parseBlockHeader(CoinType type, String hex, int height) {
+        ByteBuffer buffer = ByteBuffer.wrap(Hex.decode(hex)).order(ByteOrder.LITTLE_ENDIAN);
+        int nVersion = (buffer.getInt() & 0x0000ffff);
+        buffer.position(buffer.position() + 32); //hashPrevBlock
+        buffer.position(buffer.position() + 32); //hashMerkleRoot
+        long nTime = unsigned(buffer.getInt());
+        long nBits = unsigned(buffer.getInt());
+        long nNonce = unsigned(buffer.getInt());
+        return new BlockHeader(type, nTime, height);
+    }
+
+    long unsigned(int i) {
+        return ((long) i & 0xffffffffL);
     }
 
     @Override
@@ -323,7 +340,8 @@ public class ServerClient implements BitBlockchainConnection {
             @Override
             public void handle(CallMessage message) {
                 try {
-                    BlockHeader header = parseBlockHeader(type, message.getParams().getJSONObject(0));
+                    JSONObject jsonObject = message.getParams().getJSONObject(0);
+                    BlockHeader header = parseBlockHeader(type, jsonObject.getString("hex"), jsonObject.getInt("height"));
                     listener.onNewBlock(header);
                 } catch (JSONException e) {
                     log.error("Unexpected JSON format", e);
@@ -333,7 +351,7 @@ public class ServerClient implements BitBlockchainConnection {
 
         log.info("Going to subscribe to block chain headers");
 
-        final CallMessage callMessage = new CallMessage("blockchain.headers.subscribe", (List)null);
+        final CallMessage callMessage = new CallMessage("blockchain.headers.subscribe", (List) null);
         ListenableFuture<ResultMessage> reply = stratumClient.subscribe(callMessage, blockchainHeaderHandler);
 
         Futures.addCallback(reply, new FutureCallback<ResultMessage>() {
@@ -341,7 +359,8 @@ public class ServerClient implements BitBlockchainConnection {
             @Override
             public void onSuccess(ResultMessage result) {
                 try {
-                    BlockHeader header = parseBlockHeader(type, result.getResult().getJSONObject(0));
+                    JSONObject jsonObject = result.getResult().getJSONObject(0);
+                    BlockHeader header = parseBlockHeader(type, jsonObject.getString("hex"), jsonObject.getInt("height"));
                     listener.onNewBlock(header);
                 } catch (JSONException e) {
                     log.error("Unexpected JSON format", e);
@@ -360,28 +379,33 @@ public class ServerClient implements BitBlockchainConnection {
         }, Threading.USER_THREAD);
     }
 
+    final transient Map<String, AbstractAddress> scripHashToAddress = new HashMap<>();
+
     @Override
     public void subscribeToAddresses(List<AbstractAddress> addresses, final TransactionEventListener<BitTransaction> listener) {
         checkNotNull(stratumClient);
 
-        final CallMessage callMessage = new CallMessage("blockchain.address.subscribe", (List)null);
+        //final CallMessage callMessage = new CallMessage("blockchain.address.subscribe", (List) null);
+        final CallMessage callMessage = new CallMessage("blockchain.scripthash.subscribe", (List) null);
 
         // TODO use TransactionEventListener directly because the current solution leaks memory
         StratumClient.SubscribeResultHandler addressHandler = new StratumClient.SubscribeResultHandler() {
             @Override
             public void handle(CallMessage message) {
                 try {
-                    AbstractAddress address = BitAddress.from(type, message.getParams().getString(0));
+                    AbstractAddress address = scripHashToAddress.get(message.getParams().getString(0));
+                    //AbstractAddress address = BitAddress.from(type, message.getParams().getString(0));
                     AddressStatus status;
                     if (message.getParams().isNull(1)) {
                         status = new AddressStatus(address, null);
-                    }
-                    else {
+                    } else {
                         status = new AddressStatus(address, message.getParams().getString(1));
                     }
                     listener.onAddressStatusUpdate(status);
+/*
                 } catch (AddressMalformedException e) {
                     log.error("Address subscribe sent a malformed address", e);
+*/
                 } catch (JSONException e) {
                     log.error("Unexpected JSON format", e);
                 }
@@ -390,7 +414,9 @@ public class ServerClient implements BitBlockchainConnection {
 
         for (final AbstractAddress address : addresses) {
             log.debug("Going to subscribe to {}", address);
-            callMessage.setParam(address.toString());
+            String elScriptHash = ((BitAddress) address).getElScriptHash();
+            scripHashToAddress.put(elScriptHash, address);
+            callMessage.setParam(elScriptHash);
 
             ListenableFuture<ResultMessage> reply = stratumClient.subscribe(callMessage, addressHandler);
 
@@ -429,8 +455,8 @@ public class ServerClient implements BitBlockchainConnection {
                              final BitTransactionEventListener listener) {
         checkNotNull(stratumClient);
 
-        CallMessage message = new CallMessage("blockchain.address.listunspent",
-                Arrays.asList(status.getAddress().toString()));
+        CallMessage message = new CallMessage("blockchain.scripthash.listunspent",
+                Arrays.asList(((BitAddress) status.getAddress()).getElScriptHash()));
         final ListenableFuture<ResultMessage> result = stratumClient.call(message);
 
         Futures.addCallback(result, new FutureCallback<ResultMessage>() {
@@ -462,8 +488,8 @@ public class ServerClient implements BitBlockchainConnection {
                              final TransactionEventListener<BitTransaction> listener) {
         checkNotNull(stratumClient);
 
-        final CallMessage message = new CallMessage("blockchain.address.get_history",
-                Arrays.asList(status.getAddress().toString()));
+        final CallMessage message = new CallMessage("blockchain.scripthash.get_history",
+                Arrays.asList(((BitAddress) status.getAddress()).getElScriptHash()));
         final ListenableFuture<ResultMessage> result = stratumClient.call(message);
 
         Futures.addCallback(result, new FutureCallback<ResultMessage>() {
@@ -547,17 +573,21 @@ public class ServerClient implements BitBlockchainConnection {
                 try {
                     String rawTx = result.getResult().getString(0);
                     byte[] txBytes = Utils.HEX.decode(rawTx);
-                    BitTransaction tx = new BitTransaction(type, txBytes);
-                    if (!tx.getHash().equals(txHash)) {
-                        throw new Exception("Requested TX " + txHash + " but got " + tx.getHashAsString());
-                    }
-                    listener.onTransactionUpdate(tx);
-                    if (cacheDir != null) {
-                        try {
-                            Files.write(txBytes, getTxCacheFile(txHash));
-                        } catch (IOException e) {
-                            log.warn("Error writing cached transaction", e);
+                    try {
+                        BitTransaction tx = new BitTransaction(type, txBytes);
+                        if (!tx.getHash().equals(txHash)) {
+                            throw new Exception("Requested TX " + txHash + " but got " + tx.getHashAsString());
                         }
+                        listener.onTransactionUpdate(tx);
+                        if (cacheDir != null) {
+                            try {
+                                Files.write(txBytes, getTxCacheFile(txHash));
+                            } catch (IOException e) {
+                                log.warn("Error writing cached transaction", e);
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 } catch (Exception e) {
                     onFailure(e);
@@ -579,7 +609,7 @@ public class ServerClient implements BitBlockchainConnection {
     public void getBlock(final int height, final TransactionEventListener<BitTransaction> listener) {
         checkNotNull(stratumClient);
 
-        final CallMessage message = new CallMessage("blockchain.block.get_header", height);
+        final CallMessage message = new CallMessage("blockchain.block.header", ImmutableList.of(height));
 
         final ListenableFuture<ResultMessage> result = stratumClient.call(message);
 
@@ -587,7 +617,8 @@ public class ServerClient implements BitBlockchainConnection {
             @Override
             public void onSuccess(ResultMessage result) {
                 try {
-                    BlockHeader header = parseBlockHeader(type, result.getResult().getJSONObject(0));
+                    String hex = result.getResult().getString(0);
+                    BlockHeader header = parseBlockHeader(type, hex, height);
                     listener.onBlockUpdate(header);
                 } catch (JSONException e) {
                     log.error("Unexpected JSON format", e);
@@ -671,29 +702,32 @@ public class ServerClient implements BitBlockchainConnection {
             versionString = this.getClass().getCanonicalName();
         }
 
-        final CallMessage pingMsg = new CallMessage("server.version",
-                ImmutableList.of(versionString, CLIENT_PROTOCOL));
-        ListenableFuture<ResultMessage> pong = stratumClient.call(pingMsg);
-        Futures.addCallback(pong, new FutureCallback<ResultMessage>() {
-            @Override
-            public void onSuccess(@Nullable ResultMessage result) {
-                if (log.isDebugEnabled()) {
-                    try {
-                        log.debug("Server {} version {} OK", type.getName(),
-                                checkNotNull(result).getResult().get(0));
-                    } catch (Exception ignore) { }
-                }
-            }
+        final CallMessage pingMsg = new CallMessage("server.ping",
+                ImmutableList.of());
 
-            @Override
-            public void onFailure(Throwable t) {
-                if (t instanceof CancellationException) {
-                    log.debug("Canceling {} call", pingMsg.getMethod());
-                } else {
-                    log.error("Server {} ping failed", type.getName());
+        Threading.USER_THREAD.execute(() -> {
+            ListenableFuture<ResultMessage> pong = stratumClient.call(pingMsg);
+            Futures.addCallback(pong, new FutureCallback<ResultMessage>() {
+                @Override
+                public void onSuccess(@Nullable ResultMessage result) {
+                    if (log.isDebugEnabled()) {
+                        try {
+                            log.debug("Server {} version {} OK", type.getName(),
+                                    checkNotNull(result).getResult().get(0));
+                        } catch (Exception ignore) { }
+                    }
                 }
-            }
-        }, Threading.USER_THREAD);
+
+                @Override
+                public void onFailure(Throwable t) {
+                    if (t instanceof CancellationException) {
+                        log.debug("Canceling {} call", pingMsg.getMethod());
+                    } else {
+                        log.error("Server {} ping failed", type.getName());
+                    }
+                }
+            }, Threading.USER_THREAD);
+        });
     }
 
     public void setCacheDir(File cacheDir, int cacheSize) {
@@ -774,9 +808,7 @@ public class ServerClient implements BitBlockchainConnection {
 
             if (txPos != unspentTx.txPos) return false;
             if (value != unspentTx.value) return false;
-            if (!txHash.equals(unspentTx.txHash)) return false;
-
-            return true;
+            return txHash.equals(unspentTx.txHash);
         }
 
         @Override

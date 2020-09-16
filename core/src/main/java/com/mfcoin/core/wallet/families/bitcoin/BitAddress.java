@@ -7,8 +7,11 @@ import com.mfcoin.core.wallet.AbstractAddress;
 import org.bitcoinj.core.Address;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.ECKey;
+import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.WrongNetworkException;
 import org.bitcoinj.script.Script;
+import org.bitcoinj.script.ScriptBuilder;
+import org.spongycastle.util.encoders.Hex;
 
 import java.nio.ByteBuffer;
 
@@ -101,5 +104,26 @@ public class BitAddress extends Address implements AbstractAddress {
     @Override
     public long getId() {
         return ByteBuffer.wrap(getHash160()).getLong();
+    }
+
+    private byte[] reverse(byte[] array) {
+        if (array == null) {
+            return array;
+        }
+        int i = array.length;
+        int j = 0;
+        byte[] result = new byte[i];
+        while (j < array.length) {
+            result[j] = array[i - 1];
+            i--;
+            j++;
+        }
+        return result;
+    }
+
+    public String getElScriptHash() {
+        return Hex.toHexString(reverse(
+                Sha256Hash.create(
+                        ScriptBuilder.createOutputScript(this).getProgram()).getBytes()));
     }
 }

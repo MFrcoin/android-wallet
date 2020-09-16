@@ -1,6 +1,7 @@
 package com.mfcoin.core.coins;
 
         import com.mfcoin.core.coins.families.BitFamily;
+        import com.mfcoin.core.coins.families.Families;
 
 /**
  * @author John L. Jegutanis
@@ -11,9 +12,9 @@ public class MfcoinMain extends BitFamily {
 
         addressHeader = 51;
         p2shHeader = 5;
-        acceptableAddressCodes = new int[] { addressHeader, p2shHeader };
+        acceptableAddressCodes = new int[]{addressHeader, p2shHeader};
         spendableCoinbaseDepth = 60;
-        //dumpedPrivateKeyHeader = 176;
+        dumpedPrivateKeyHeader = 179;
 
         name = "MFCoin";
         symbol = "MFC";
@@ -26,6 +27,7 @@ public class MfcoinMain extends BitFamily {
         //softDustPolicy = SoftDustPolicy.BASE_FEE_FOR_EACH_SOFT_DUST_TXO;
         softDustPolicy = SoftDustPolicy.AT_LEAST_BASE_FEE_IF_SOFT_DUST_TXO_PRESENT;
         signedMessageHeader = toBytes("MFCoin Signed Message:\n");
+        family = Families.PEERCOIN;
     }
 
     private static MfcoinMain instance = new MfcoinMain();

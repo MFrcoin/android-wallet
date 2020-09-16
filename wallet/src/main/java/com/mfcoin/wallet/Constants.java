@@ -129,8 +129,8 @@ public class Constants {
 
     // TODO move to resource files
     public static final List<CoinAddress> DEFAULT_COINS_SERVERS = ImmutableList.of(
-            new CoinAddress(MfcoinMain.get(),       new ServerAddress("node2.mfcoin.net", 23000),
-                                                    new ServerAddress("node.mfcoin.net", 23000)),
+            new CoinAddress(MfcoinMain.get(),       new ServerAddress("electrumx.mfcoin.net", 50001))
+/*
             new CoinAddress(BitcoinMain.get(),      new ServerAddress("btc-cce-1.coinomi.net", 5001),
                                                     new ServerAddress("btc-cce-2.coinomi.net", 5001)),
             new CoinAddress(BitcoinTest.get(),      new ServerAddress("btc-testnet-cce-1.coinomi.net", 15001),
@@ -216,6 +216,7 @@ public class Constants {
                                                     new ServerAddress("richx-cce-2.coinomi.net", 5046)),
             new CoinAddress(IxcoinMain.get(),       new ServerAddress("ixc-cce-1.coinomi.net", 5047),
                                                     new ServerAddress("ixc-cce-2.coinomi.net", 5047))
+*/
     );
 
     public static final HashMap<CoinType, Integer> COINS_ICONS;
@@ -223,6 +224,7 @@ public class Constants {
     static {
         COINS_ICONS = new HashMap<>();
         COINS_ICONS.put(CoinID.MFCOIN_MAIN.getCoinType(), R.mipmap.mfcoin);
+/*
         COINS_ICONS.put(CoinID.BITCOIN_MAIN.getCoinType(), R.mipmap.bitcoin);
         COINS_ICONS.put(CoinID.BITCOIN_TEST.getCoinType(), R.mipmap.bitcoin_test);
         COINS_ICONS.put(CoinID.DOGECOIN_MAIN.getCoinType(), R.mipmap.dogecoin);
@@ -265,8 +267,10 @@ public class Constants {
         COINS_ICONS.put(CoinID.CLUBCOIN_MAIN.getCoinType(), R.mipmap.clubcoin);
         COINS_ICONS.put(CoinID.RICHCOIN_MAIN.getCoinType(), R.mipmap.richcoin);
         COINS_ICONS.put(CoinID.IXCOIN_MAIN.getCoinType(), R.mipmap.ixcoin);
+*/
 
         COINS_BLOCK_EXPLORERS = new HashMap<CoinType, String>();
+/*
         COINS_BLOCK_EXPLORERS.put(CoinID.BITCOIN_MAIN.getCoinType(), "https://blockchain.info/tx/%s");
         COINS_BLOCK_EXPLORERS.put(CoinID.BITCOIN_TEST.getCoinType(), "https://chain.so/tx/BTCTEST/%s");
         COINS_BLOCK_EXPLORERS.put(CoinID.DOGECOIN_MAIN.getCoinType(), "https://chain.so/tx/DOGE/%s");
@@ -306,7 +310,8 @@ public class Constants {
         COINS_BLOCK_EXPLORERS.put(CoinID.EGULDEN_MAIN.getCoinType(), "https://chainz.cryptoid.info/efl/tx.dws?%s");
         COINS_BLOCK_EXPLORERS.put(CoinID.RICHCOIN_MAIN.getCoinType(), "https://explorer.richcoin.us/transaction?transaction=%s");
         COINS_BLOCK_EXPLORERS.put(CoinID.IXCOIN_MAIN.getCoinType(), "https://chainz.cryptoid.info/ixc/tx.dws?%s");
-        COINS_BLOCK_EXPLORERS.put(CoinID.MFCOIN_MAIN.getCoinType(), "https://block.mfcoin.net/tx/%s");
+*/
+        COINS_BLOCK_EXPLORERS.put(CoinID.MFCOIN_MAIN.getCoinType(), "https://explorer.mfcoin.net/tx/%s");
     }
 
     public static final CoinType DEFAULT_COIN = MfcoinMain.get();
@@ -318,7 +323,8 @@ public class Constants {
     );
 
     public static final List<CoinType> SUPPORTED_COINS = ImmutableList.of(
-            MfcoinMain.get(),
+            MfcoinMain.get()
+/*
             BitcoinMain.get(),
             AuroracoinMain.get(),
             BatacoinMain.get(),
@@ -360,5 +366,6 @@ public class Constants {
             BitcoinTest.get(),
             LitecoinTest.get(),
             DogecoinTest.get()
+*/
     );
 }

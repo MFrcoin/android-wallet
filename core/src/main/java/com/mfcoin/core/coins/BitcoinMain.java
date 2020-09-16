@@ -1,6 +1,7 @@
 package com.mfcoin.core.coins;
 
 import com.mfcoin.core.coins.families.BitFamily;
+import com.mfcoin.core.coins.families.Families;
 
 /**
  * @author John L. Jegutanis
@@ -25,6 +26,7 @@ public class BitcoinMain extends BitFamily {
         softDustLimit = value(1000000); // 0.01 BTC
         softDustPolicy = SoftDustPolicy.AT_LEAST_BASE_FEE_IF_SOFT_DUST_TXO_PRESENT;
         signedMessageHeader = toBytes("Bitcoin Signed Message:\n");
+        family = Families.PEERCOIN;
     }
 
     private static BitcoinMain instance = new BitcoinMain();
