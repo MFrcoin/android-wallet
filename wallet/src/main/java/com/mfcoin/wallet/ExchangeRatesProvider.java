@@ -48,6 +48,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
@@ -65,9 +66,11 @@ import javax.annotation.Nullable;
 public class ExchangeRatesProvider extends ContentProvider {
 
     public static class ExchangeRate {
-        @Nonnull public final ExchangeRateBase rate;
+        @Nonnull
+        public final ExchangeRateBase rate;
         public final String currencyCodeId;
-        @Nullable public final String source;
+        @Nullable
+        public final String source;
 
         public ExchangeRate(@Nonnull final ExchangeRateBase rate,
                             final String currencyCodeId, @Nullable final String source) {
@@ -107,9 +110,10 @@ public class ExchangeRatesProvider extends ContentProvider {
     private static final String TO_CRYPTO_URL = BASE_URL + "/to-crypto/%s";
 
     private final String MFC_SYMBOL = "MFC";
-    private final String MFC_RATES_URL = "https://api.mfc-market.ru";
-    private final String MFC_TOLOCAL_URL = MFC_RATES_URL + "/ticker_local";
-    private final String MFC_TOCRYPTO_URL = MFC_RATES_URL + "/ticker_crypto";
+    private final String MFC_RATES_URL = "https://explorer.mfcoin.net/api/stats/cmcdata";
+    private final String CROSS_RATES = "https://explorer.mfcoin.net/rates.json";
+    private final String MFC_TOLOCAL_URL = MFC_RATES_URL;// + "/ticker_local";
+    private final String MFC_TOCRYPTO_URL = MFC_RATES_URL;// + "/ticker_crypto";
 
     private static final String COINOMI_SOURCE = "coinomi.com";
     private static final String MFCMARKET_SOURCE = "mfc-market.ru";
@@ -142,16 +146,16 @@ public class ExchangeRatesProvider extends ContentProvider {
     }
 
     public static Uri contentUriToLocal(@Nonnull final String packageName,
-                                  @Nonnull final String coinSymbol,
-                                  final boolean offline) {
+                                        @Nonnull final String coinSymbol,
+                                        final boolean offline) {
         final Uri.Builder uri = contentUri(packageName, offline);
         uri.appendPath("to-local").appendPath(coinSymbol);
         return uri.build();
     }
 
     public static Uri contentUriToCrypto(@Nonnull final String packageName,
-                                  @Nonnull final String localSymbol,
-                                  final boolean offline) {
+                                         @Nonnull final String localSymbol,
+                                         final boolean offline) {
         final Uri.Builder uri = contentUri(packageName, offline);
         uri.appendPath("to-crypto").appendPath(localSymbol);
         return uri.build();
@@ -180,7 +184,7 @@ public class ExchangeRatesProvider extends ContentProvider {
     }
 
     public static Map<String, ExchangeRate> getRates(final Context context,
-                                              @Nonnull String localSymbol) {
+                                                     @Nonnull String localSymbol) {
         ImmutableMap.Builder<String, ExchangeRate> builder = ImmutableMap.builder();
 
         if (context != null) {
@@ -230,30 +234,82 @@ public class ExchangeRatesProvider extends ContentProvider {
         }
 
         if (!offline && (lastUpdated == 0 || now - lastUpdated > Constants.RATE_UPDATE_FREQ_MS)) {
+
+            JSONObject crossRates;
             URL url;
             URL mfcUrl;
             try {
                 if (isLocalToCrypto) {
                     url = new URL(String.format(TO_CRYPTO_URL, symbol));
-                    mfcUrl = new URL(MFC_TOLOCAL_URL);
+                    mfcUrl = new URL(MFC_TOCRYPTO_URL);
                 } else {
                     url = new URL(String.format(TO_LOCAL_URL, symbol));
-                    mfcUrl = new URL(MFC_TOCRYPTO_URL);
+                    mfcUrl = new URL(MFC_TOLOCAL_URL);
                 }
+                crossRates = requestExchangeRatesJson(new URL(CROSS_RATES));
             } catch (final MalformedURLException x) {
                 throw new RuntimeException(x); // Should not happen
             }
 
             JSONObject newExchangeRatesJson = requestExchangeRatesJson(url);
 
+            if (newExchangeRatesJson == null) {
+                newExchangeRatesJson = new JSONObject();
+            }
+
             JSONObject mfcExchangeRatesJson = requestExchangeRatesJson(mfcUrl);
-            String mfcRate = mfcExchangeRatesJson.optString(symbol, null);
-            if (mfcRate != null && newExchangeRatesJson != null) {
+            if (mfcExchangeRatesJson != null) {
                 try {
-                    newExchangeRatesJson.put(MFC_SYMBOL, mfcRate);
-                }
-                catch (JSONException ex) {
-                    log.warn("Exception while adding MFC rate", ex);
+                    JSONObject quote = mfcExchangeRatesJson
+                            .optJSONObject("data")
+                            .optJSONObject("3837")
+                            .optJSONObject("quote");
+
+                    String baseCurrency = "USD";
+
+                    if (!isLocalToCrypto && "MFC".equals(symbol)) {
+                        // try to receive MFC rate with crosses
+                        String usdPrice = quote.optJSONObject(baseCurrency).optString("price", null);
+                        newExchangeRatesJson.put(baseCurrency, usdPrice);
+                        Value usd = FiatValue.parse(baseCurrency, usdPrice);
+
+                        if (crossRates != null) {
+                            JSONObject rates = crossRates.getJSONObject("rates");
+                            Iterator<String> rateKeys = rates.keys();
+                            while (rateKeys.hasNext()) {
+                                String key = rateKeys.next();
+                                Value value = FiatValue.parse(key, rates.getString(key));
+                                BigDecimal rate = getValue(usd).multiply(getValue(value));
+                                if (!newExchangeRatesJson.has(key)) {
+                                    newExchangeRatesJson.put(key, rate.toPlainString());
+                                }
+                            }
+                        }
+                    } else {
+                        if (quote.has(symbol)) {
+                            String rate = quote.optJSONObject(symbol).optString("price", null);
+                            if (rate != null) {
+                                try {
+                                    newExchangeRatesJson.put(MFC_SYMBOL, rate);
+                                } catch (JSONException ex) {
+                                    log.warn("Exception while adding MFC rate", ex);
+                                }
+                            }
+                        } else {
+                            if (crossRates != null && crossRates.getJSONObject("rates").has(symbol)) {
+                                String usdPrice = quote.optJSONObject(baseCurrency).optString("price", null);
+                                String cross = crossRates.getJSONObject("rates").getString(symbol);
+                                Value usd = FiatValue.parse(baseCurrency, usdPrice);
+                                Value value = FiatValue.parse(symbol, cross);
+                                BigDecimal rate = getValue(usd).multiply(getValue(value));
+                                newExchangeRatesJson.put(MFC_SYMBOL, rate.toPlainString());
+                            } else {
+                                newExchangeRatesJson.remove(MFC_SYMBOL);
+                            }
+                        }
+                    }
+                } catch (Exception e) {
+                    log.warn("Exception while parsing MFC rate", e);
                 }
             }
 
@@ -295,6 +351,11 @@ public class ExchangeRatesProvider extends ContentProvider {
         }
 
         return cursor;
+    }
+
+    BigDecimal getValue(Value value) {
+        double pow = Math.pow(10, value.smallestUnitExponent());
+        return BigDecimal.valueOf(value.value / pow);
     }
 
     private void addRow(MatrixCursor cursor, ExchangeRate exchangeRate) {

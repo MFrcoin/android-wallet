@@ -40,6 +40,7 @@ import android.widget.Toast;
 import com.mfcoin.core.coins.BitcoinMain;
 import com.mfcoin.core.coins.CoinID;
 import com.mfcoin.core.coins.CoinType;
+import com.mfcoin.core.coins.MfcoinMain;
 import com.mfcoin.core.coins.Value;
 import com.mfcoin.core.util.GenericUtils;
 import com.mfcoin.wallet.Configuration;
@@ -99,7 +100,7 @@ public final class ExchangeRatesFragment extends ListFragment implements OnShare
         if (getArguments() != null && getArguments().containsKey(Constants.ARG_COIN_ID)) {
             type = CoinID.typeFromId(getArguments().getString(Constants.ARG_COIN_ID));
         } else {
-            type = BitcoinMain.get();
+            type = MfcoinMain.get();
         }
         contentUri = ExchangeRatesProvider.contentUriToLocal(context.getPackageName(),
                 type.getSymbol(), false);

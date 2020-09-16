@@ -454,5 +454,6 @@ The user of the wallet agrees to arbitrate any dispute arising from or in connec
 8. Last amendment\n
 \n
 This disclaimer was amended for the last time on January 1st, 2016.</string>
-
+    <string name="wallet_transactions_stake">Staked</string>
+    <string name="wallet_nvs">NVS transaction</string>
 </resources>

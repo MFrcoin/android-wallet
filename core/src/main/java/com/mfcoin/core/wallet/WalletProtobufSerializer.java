@@ -270,15 +270,12 @@ public class WalletProtobufSerializer {
                 bitcoinjCrypter.setR(encryptionParameters.getR());
 
                 crypter = new KeyCrypterScrypt(bitcoinjCrypter.build());
-            }
-            else if (walletProto.getEncryptionType() == Protos.Wallet.EncryptionType.UNENCRYPTED) {
+            } else if (walletProto.getEncryptionType() == Protos.Wallet.EncryptionType.UNENCRYPTED) {
                 crypter = null;
-            }
-            else {
+            } else {
                 throw new KeyCrypterException("Unsupported encryption: " + walletProto.getEncryptionType().toString());
             }
-        }
-        else {
+        } else {
             crypter = null;
         }
 
@@ -347,7 +344,7 @@ public class WalletProtobufSerializer {
             if (walletAccount instanceof WalletPocketHD) {
                 WalletPocketHD account = (WalletPocketHD) walletAccount;
                 // Force resync
-                account.addressesStatus.clear();
+                account.scriptsStatus.clear();
                 // Gather hashes to trim them later
                 Set<Sha256Hash> txHashes = new HashSet<>(account.rawTransactions.size());
                 // Reconstruct UTXO set

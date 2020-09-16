@@ -126,7 +126,7 @@ final public class WalletActivity extends BaseWalletActivity implements
         // Create the overview and account fragments
         FragmentTransaction tr = getFM().beginTransaction();
         if (savedInstanceState == null) {
-            checkAlerts();
+            //checkAlerts();
 
             // Add overview fragment
             overviewFragment = OverviewFragment.getInstance();

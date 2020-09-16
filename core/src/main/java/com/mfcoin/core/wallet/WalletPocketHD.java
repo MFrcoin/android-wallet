@@ -2,13 +2,13 @@
  * Copyright 2013 Google Inc.
  * Copyright 2014 Andreas Schildbach
  * Copyright 2014 John L. Jegutanis
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,6 +31,7 @@ import org.bitcoinj.crypto.ChildNumber;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.KeyCrypter;
 import org.bitcoinj.script.Script;
+import org.bitcoinj.script.ScriptChunk;
 import org.bitcoinj.wallet.RedeemData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,8 +57,6 @@ import static org.bitcoinj.wallet.KeyChain.KeyPurpose.REFUND;
 
 /**
  * @author John L. Jegutanis
- *
- *
  */
 public class WalletPocketHD extends BitWalletBase {
     private static final Logger log = LoggerFactory.getLogger(WalletPocketHD.class);
@@ -112,7 +111,8 @@ public class WalletPocketHD extends BitWalletBase {
         }
     }
 
-    @VisibleForTesting Protos.WalletPocket toProtobuf() {
+    @VisibleForTesting
+    Protos.WalletPocket toProtobuf() {
         lock.lock();
         try {
             return WalletPocketProtobufSerializer.toProtobuf(this);
@@ -163,7 +163,7 @@ public class WalletPocketHD extends BitWalletBase {
      * {@link org.bitcoinj.crypto.KeyCrypterScrypt}.
      *
      * @throws org.bitcoinj.crypto.KeyCrypterException Thrown if the wallet encryption fails for some reason,
-     *         leaving the group unchanged.
+     *                                                 leaving the group unchanged.
      */
     @Override
     public void encrypt(KeyCrypter keyCrypter, KeyParameter aesKey) {
@@ -236,6 +236,7 @@ public class WalletPocketHD extends BitWalletBase {
 
     /**
      * Locates a keypair from the basicKeyChain given the raw public key bytes.
+     *
      * @return ECKey or null if no such key was found.
      */
     @Nullable
@@ -275,7 +276,9 @@ public class WalletPocketHD extends BitWalletBase {
         return currentAddress(RECEIVE_FUNDS);
     }
 
-    public BitAddress getRefundAddress() { return currentAddress(REFUND); }
+    public BitAddress getRefundAddress() {
+        return currentAddress(REFUND);
+    }
 
     @Override
     public boolean hasUsedAddresses() {
@@ -325,12 +328,17 @@ public class WalletPocketHD extends BitWalletBase {
             int maximumKeyIndex = SimpleHDKeyChain.LOOKAHEAD - 1;
 
             // If there are used keys
-            if (!addressesStatus.isEmpty()) {
+            if (!scriptsStatus.isEmpty()) {
                 int lastUsedKeyIndex = 0;
                 // Find the last used key index
-                for (Map.Entry<AbstractAddress, String> entry : addressesStatus.entrySet()) {
+                for (Map.Entry<Script, String> entry : scriptsStatus.entrySet()) {
                     if (entry.getValue() == null) continue;
-                    DeterministicKey usedKey = keys.findKeyFromPubHash(getHash160(entry.getKey()));
+                    DeterministicKey usedKey;
+                    if (entry.getKey().isSentToRawPubKey()) {
+                        usedKey = keys.findKeyFromPubKey(entry.getKey().getPubKey());
+                    } else {
+                        usedKey = keys.findKeyFromPubHash(entry.getKey().getPubKeyHash());
+                    }
                     if (usedKey != null && keys.isExternal(usedKey) && usedKey.getChildNumber().num() > lastUsedKeyIndex) {
                         lastUsedKeyIndex = usedKey.getChildNumber().num();
                     }
@@ -437,9 +445,15 @@ public class WalletPocketHD extends BitWalletBase {
         try {
             HashSet<AbstractAddress> usedAddresses = new HashSet<>();
 
-            for (Map.Entry<AbstractAddress, String> entry : addressesStatus.entrySet()) {
+            for (Map.Entry<Script, String> entry : scriptsStatus.entrySet()) {
                 if (entry.getValue() != null) {
-                    usedAddresses.add(entry.getKey());
+                    try {
+                        usedAddresses.add(
+                                BitAddress.from(
+                                        entry.getKey().getToAddress(type, true)));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
             }
 
@@ -450,7 +464,7 @@ public class WalletPocketHD extends BitWalletBase {
     }
 
     public BitAddress getAddress(SimpleHDKeyChain.KeyPurpose purpose,
-                              boolean isManualAddressManagement) {
+                                 boolean isManualAddressManagement) {
         BitAddress receiveAddress = null;
         if (isManualAddressManagement) {
             receiveAddress = getLastUsedAddress(purpose);
@@ -465,13 +479,14 @@ public class WalletPocketHD extends BitWalletBase {
     /**
      * Get the currently latest unused address by purpose.
      */
-    @VisibleForTesting BitAddress currentAddress(SimpleHDKeyChain.KeyPurpose purpose) {
+    @VisibleForTesting
+    BitAddress currentAddress(SimpleHDKeyChain.KeyPurpose purpose) {
         lock.lock();
         try {
             return BitAddress.from(type, keys.getCurrentUnusedKey(purpose));
         } finally {
             lock.unlock();
-            subscribeToAddressesIfNeeded();
+            subscribeToScriptHashIfNeeded();
         }
     }
 
@@ -495,28 +510,40 @@ public class WalletPocketHD extends BitWalletBase {
     }
 
     @Override
-    public List<AbstractAddress> getActiveAddresses() {
+    public List<Script> getActiveScripts() {
         lock.lock();
         try {
-            ImmutableList.Builder<AbstractAddress> activeAddresses = ImmutableList.builder();
+            ImmutableList.Builder<Script> activeScripts = ImmutableList.builder();
             for (DeterministicKey key : keys.getActiveKeys()) {
-                activeAddresses.add(BitAddress.from(type, key));
+                BitAddress address = BitAddress.from(type, key);
+                activeScripts.add(address.getP2PKScript());
+                activeScripts.add(address.getP2PKHScript());
             }
-            return activeAddresses.build();
+            return activeScripts.build();
         } finally {
             lock.unlock();
         }
     }
 
     @Override
-    public void markAddressAsUsed(AbstractAddress address) {
-        checkArgument(address.getType().equals(type), "Wrong address type");
-        if (address instanceof BitAddress) {
-            markAddressAsUsed((BitAddress)address);
-        } else {
-            throw new IllegalArgumentException("Wrong address class");
+    public void markAddressAsUsed(Script script) {
+        try {
+            AbstractAddress address = null;
+            if (script.getChunks().size() == 12) {
+                ScriptChunk scriptChunk = script.getChunks().get(9);
+                address = BitAddress.from(type, scriptChunk.data);
+            } else {
+                address = BitAddress.from(script.getToAddress(type, true));
+            }
+            checkArgument(address.getType().equals(type), "Wrong address type");
+            if (address instanceof BitAddress) {
+                markAddressAsUsed((BitAddress) address);
+            } else {
+                throw new IllegalArgumentException("Wrong address class");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
     public void markAddressAsUsed(BitAddress address) {
@@ -525,6 +552,6 @@ public class WalletPocketHD extends BitWalletBase {
 
     @Override
     public String toString() {
-        return WalletPocketHD.class.getSimpleName() + " " + id.substring(0, 4)+ " " + type;
+        return WalletPocketHD.class.getSimpleName() + " " + id.substring(0, 4) + " " + type;
     }
 }

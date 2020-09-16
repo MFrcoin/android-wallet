@@ -24,17 +24,18 @@ import java.util.Set;
 public enum CoinID {
     MFCOIN_MAIN(MfcoinMain.get()),
     BITCOIN_MAIN(BitcoinMain.get()),
-    BITCOIN_TEST(BitcoinTest.get()),
     LITECOIN_MAIN(LitecoinMain.get()),
-    LITECOIN_TEST(LitecoinTest.get()),
     DOGECOIN_MAIN(DogecoinMain.get()),
+    DASH_MAIN(DashMain.get()),
+    NAMECOIN_MAIN(NamecoinMain.get()),
+    PEERCOIN_MAIN(PeercoinMain.get())
+/*
+    BITCOIN_TEST(BitcoinTest.get()),
+    LITECOIN_TEST(LitecoinTest.get()),
     DOGECOIN_TEST(DogecoinTest.get()),
     REDDCOIN_MAIN(ReddcoinMain.get()),
-    PEERCOIN_MAIN(PeercoinMain.get()),
-    DASH_MAIN(DashMain.get()),
     NUBITS_MAIN(NuBitsMain.get()),
     NUSHARES_MAIN(NuSharesMain.get()),
-    NAMECOIN_MAIN(NamecoinMain.get()),
     BLACKCOIN_MAIN(BlackcoinMain.get()),
     MONACOIN_MAIN(MonacoinMain.get()),
     FEATHERCOIN_MAIN(FeathercoinMain.get()),
@@ -64,6 +65,7 @@ public enum CoinID {
     CLUBCOIN_MAIN(ClubcoinMain.get()),
     RICHCOIN_MAIN(RichcoinMain.get()),
     IXCOIN_MAIN(IxcoinMain.get()),
+*/
     ;
 
     private static List<CoinType> types;

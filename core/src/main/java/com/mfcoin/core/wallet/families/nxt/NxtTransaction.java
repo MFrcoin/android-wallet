@@ -11,6 +11,7 @@ import com.google.common.collect.ImmutableList;
 
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.TransactionConfidence;
+import org.bitcoinj.core.TransactionOutput;
 
 import java.util.List;
 
@@ -34,6 +35,11 @@ public final class NxtTransaction implements AbstractTransaction {
 
     public void setConfidenceType(TransactionConfidence.ConfidenceType conf) {
         confidence = conf;
+    }
+
+    @Override
+    public TransactionOutput getNVSOutput() {
+        return null;
     }
 
     @Override
@@ -140,6 +146,11 @@ public final class NxtTransaction implements AbstractTransaction {
 
     @Override
     public boolean isGenerated() {
+        return false;
+    }
+
+    @Override
+    public boolean isPos() {
         return false;
     }
 

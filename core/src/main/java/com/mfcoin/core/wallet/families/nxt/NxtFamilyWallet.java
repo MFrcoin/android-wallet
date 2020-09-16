@@ -9,6 +9,7 @@ import com.mfcoin.core.exceptions.TransactionBroadcastException;
 import com.mfcoin.core.network.AddressStatus;
 import com.mfcoin.core.network.BlockHeader;
 import com.mfcoin.core.network.NxtServerClient;
+import com.mfcoin.core.network.ScriptStatus;
 import com.mfcoin.core.network.ServerClient;
 import com.mfcoin.core.network.interfaces.BlockchainConnection;
 import com.mfcoin.core.network.interfaces.TransactionEventListener;
@@ -32,6 +33,7 @@ import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.Utils;
 import org.bitcoinj.crypto.DeterministicKey;
 import org.bitcoinj.crypto.KeyCrypter;
+import org.bitcoinj.script.Script;
 import org.bitcoinj.utils.ListenerRegistration;
 import org.bitcoinj.utils.Threading;
 import org.bitcoinj.wallet.RedeemData;
@@ -61,10 +63,13 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
     private static final Logger log = LoggerFactory.getLogger(NxtFamilyWallet.class);
     protected final Map<Sha256Hash, NxtTransaction> rawtransactions;
     @VisibleForTesting
-    final HashMap<AbstractAddress, String> addressesStatus;
-    @VisibleForTesting final transient ArrayList<AbstractAddress> addressesSubscribed;
-    @VisibleForTesting final transient ArrayList<AbstractAddress> addressesPendingSubscription;
-    @VisibleForTesting final transient HashMap<AbstractAddress, AddressStatus> statusPendingUpdates;
+    final HashMap<Script, String> addressesStatus;
+    @VisibleForTesting
+    final transient ArrayList<Script> addressesSubscribed;
+    @VisibleForTesting
+    final transient ArrayList<Script> addressesPendingSubscription;
+    @VisibleForTesting
+    final transient HashMap<AbstractAddress, AddressStatus> statusPendingUpdates;
     //@VisibleForTesting final transient HashSet<Sha256Hash> fetchingTransactions;
     private final NxtAddress address;
     NxtFamilyKey rootKey;
@@ -72,9 +77,11 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
     private int lastEcBlockHeight;
     private long lastEcBlockId;
     // Wallet that this account belongs
-    @Nullable private transient Wallet wallet = null;
+    @Nullable
+    private transient Wallet wallet = null;
     private NxtServerClient blockchainConnection;
-    @Nullable private Sha256Hash lastBlockSeenHash;
+    @Nullable
+    private Sha256Hash lastBlockSeenHash;
     private int lastBlockSeenHeight = -1;
     private long lastBlockSeenTimeSecs = 0;
     private List<ListenerRegistration<WalletAccountEventListener>> listeners;
@@ -370,12 +377,13 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
     }
 
     @Override
-    public List<AbstractAddress> getActiveAddresses() {
-        return ImmutableList.of((AbstractAddress) address);
+    public List<Script> getActiveScripts() {
+        //return ImmutableList.of((Script) address);
+        return ImmutableList.of();
     }
 
     @Override
-    public void markAddressAsUsed(AbstractAddress address) { /* does not apply */ }
+    public void markAddressAsUsed(Script script) { /* does not apply */ }
 
     @Override
     public Wallet getWallet() {
@@ -535,7 +543,7 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
 
     @Override
     public void onConnection(BlockchainConnection blockchainConnection) {
-        this.blockchainConnection = (NxtServerClient)blockchainConnection;
+        this.blockchainConnection = (NxtServerClient) blockchainConnection;
         subscribeToBlockchain();
 
         subscribeIfNeeded();
@@ -545,10 +553,10 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
         lock.lock();
         try {
             if (blockchainConnection != null) {
-                List<AbstractAddress> addressesToWatch = getAddressesToWatch();
-                if (addressesToWatch.size() > 0) {
-                    addressesPendingSubscription.addAll(addressesToWatch);
-                    blockchainConnection.subscribeToAddresses(addressesToWatch, this);
+                List<Script> scriptsToWatch = getScriptsToWatch();
+                if (scriptsToWatch.size() > 0) {
+                    addressesPendingSubscription.addAll(scriptsToWatch);
+                    blockchainConnection.subscribeToScripts(scriptsToWatch, this);
                 }
             }
         } catch (Exception e) {
@@ -558,12 +566,13 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
         }
     }
 
-    @VisibleForTesting List<AbstractAddress> getAddressesToWatch() {
-        ImmutableList.Builder<AbstractAddress> addressesToWatch = ImmutableList.builder();
-        for (AbstractAddress address : getActiveAddresses()) {
-            // If address not already subscribed or pending subscription
-            if (!addressesSubscribed.contains(address) && !addressesPendingSubscription.contains(address)) {
-                addressesToWatch.add(address);
+    @VisibleForTesting
+    List<Script> getScriptsToWatch() {
+        ImmutableList.Builder<Script> addressesToWatch = ImmutableList.builder();
+        for (Script script : getActiveScripts()) {
+            // If script not already subscribed or pending subscription
+            if (!addressesSubscribed.contains(script) && !addressesPendingSubscription.contains(script)) {
+                addressesToWatch.add(script);
             }
         }
         return addressesToWatch.build();
@@ -639,7 +648,7 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
     }
 
     @Override
-    public void onAddressStatusUpdate(AddressStatus status) {
+    public void onScriptStatusUpdate(ScriptStatus status) {
         log.debug("Got a status {}", status);
         lock.lock();
         try {
@@ -648,7 +657,7 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
                     this.balance = Value.valueOf(this.type, Long.valueOf(status.getStatus()));
                     //if (registerStatusForUpdate(status)) {
                     log.info("Must get transactions for address {}, status {}",
-                            status.getAddress(), status.getStatus());
+                            status.getScriptHash(), status.getStatus());
 
                     if (blockchainConnection != null) {
                         blockchainConnection.getHistoryTx(status, this);
@@ -660,8 +669,7 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
             } else {
                 commitAddressStatus(status);
             }
-        }
-        finally {
+        } finally {
             lock.unlock();
         }
     }
@@ -694,13 +702,13 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
         }
     }*/
 
-    private boolean isAddressStatusChanged(AddressStatus addressStatus) {
+    private boolean isAddressStatusChanged(ScriptStatus scriptStatus) {
         lock.lock();
         try {
-            AbstractAddress address = addressStatus.getAddress();
-            String newStatus = addressStatus.getStatus();
-            if (addressesStatus.containsKey(address)) {
-                String previousStatus = addressesStatus.get(address);
+            Script script = scriptStatus.getScript();
+            String newStatus = scriptStatus.getStatus();
+            if (addressesStatus.containsKey(script)) {
+                String previousStatus = addressesStatus.get(script);
                 if (previousStatus == null) {
                     return newStatus != null; // Status changed if newStatus is not null
                 } else {
@@ -709,7 +717,7 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
             } else {
                 // Unused address, just mark it that we watch it
                 if (newStatus == null) {
-                    commitAddressStatus(addressStatus);
+                    commitAddressStatus(scriptStatus);
                     return false;
                 } else {
                     return true;
@@ -720,16 +728,15 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
         }
     }
 
-    void commitAddressStatus(AddressStatus newStatus) {
+    void commitAddressStatus(ScriptStatus newStatus) {
         lock.lock();
         try {
             /*AddressStatus updatingStatus = statusPendingUpdates.get(newStatus.getAddress());
             if (updatingStatus != null && updatingStatus.equals(newStatus)) {
                 statusPendingUpdates.remove(newStatus.getAddress());
             }*/
-            addressesStatus.put(newStatus.getAddress(), newStatus.getStatus());
-        }
-        finally {
+            addressesStatus.put(newStatus.getScript(), newStatus.getStatus());
+        } finally {
             lock.unlock();
         }
         // Skip saving null statuses
@@ -739,19 +746,18 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
     }
 
     @Override
-    public void onTransactionHistory(AddressStatus status, List<ServerClient.HistoryTx> historyTxes) {
+    public void onTransactionHistory(ScriptStatus status, List<ServerClient.HistoryTx> historyTxes) {
         log.info("onTransactionHistory");
         lock.lock();
         try {
             //AddressStatus updatingStatus = statusPendingUpdates.get(status.getAddress());
             // Check if this updating status is valid
-                status.queueHistoryTransactions(historyTxes);
-                log.info("Fetching txs");
-                fetchTransactions(historyTxes);
-                queueOnNewBalance();
-                //tryToApplyState(updatingStatus);
-        }
-        finally {
+            status.queueHistoryTransactions(historyTxes);
+            log.info("Fetching txs");
+            fetchTransactions(historyTxes);
+            queueOnNewBalance();
+            //tryToApplyState(updatingStatus);
+        } finally {
             lock.unlock();
         }
     }
@@ -773,8 +779,7 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
             if (blockchainConnection != null) {
                 blockchainConnection.getTransaction(txHash, this);
             }
-        }
-        else {
+        } else {
             log.info("cannot fetch tx with hash {}", txHash);
         }
     }
@@ -805,8 +810,7 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
         lock.lock();
         try {
             addNewTransactionIfNeeded(tx);
-        }
-        finally {
+        } finally {
             lock.unlock();
         }
 
@@ -828,8 +832,7 @@ public class NxtFamilyWallet extends AbstractWallet<NxtTransaction, NxtAddress>
                 //tx.getConfidence().setConfidenceType(TransactionConfidence.ConfidenceType.PENDING);
                 //addWalletTransaction(WalletTransaction.Pool.PENDING, tx, true);
                 queueOnNewBalance();
-            }
-            else {
+            } else {
                 storedTx.setDepthInBlocks(tx.getDepthInBlocks());
                 storedTx.setAppearedAtChainHeight(tx.getAppearedAtChainHeight());
             }

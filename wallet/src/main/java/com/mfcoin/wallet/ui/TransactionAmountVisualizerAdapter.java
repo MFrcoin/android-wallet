@@ -66,7 +66,11 @@ public class TransactionAmountVisualizerAdapter extends BaseAdapter {
                 // When receiving hide outputs that are not ours
                 if (!pocket.isAddressMine(output.getAddress())) continue;
             }
-            outputs.add(output);
+            if (tx.isPos()) {
+                outputs.add(new AbstractOutput(output.getAddress(), value));
+            } else {
+                outputs.add(output);
+            }
         }
 
         feeAmount = tx.getFee();

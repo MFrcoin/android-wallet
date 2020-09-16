@@ -3,7 +3,7 @@ package com.mfcoin.core.wallet;
 import com.mfcoin.core.coins.CoinType;
 import com.mfcoin.core.coins.Value;
 import com.mfcoin.core.exceptions.TransactionBroadcastException;
-import com.mfcoin.core.network.AddressStatus;
+import com.mfcoin.core.network.ScriptStatus;
 import com.mfcoin.core.network.BlockHeader;
 import com.mfcoin.core.network.ServerClient.HistoryTx;
 import com.mfcoin.core.network.ServerClient.UnspentTx;
@@ -68,11 +68,12 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
         implements TransactionBag, BitTransactionEventListener {
     private static final Logger log = LoggerFactory.getLogger(TransactionWatcherWallet.class);
 
-    private final static int TX_DEPTH_SAVE_THRESHOLD = 4;
+    public final static int TX_DEPTH_SAVE_THRESHOLD = 6;
 
-    boolean DISABLE_TX_TRIMMING = false;
+    boolean DISABLE_TX_TRIMMING = true;
 
-    @Nullable private Sha256Hash lastBlockSeenHash;
+    @Nullable
+    private Sha256Hash lastBlockSeenHash;
     private int lastBlockSeenHeight = -1;
     private long lastBlockSeenTimeSecs = 0;
 
@@ -83,14 +84,21 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
     // different status for a particular address this means that there are new transactions for that
     // address and we have to fetch them. The status String could be null when an address is unused.
     @VisibleForTesting
-    final Map<AbstractAddress, String> addressesStatus;
+    final Map<Script, String> scriptsStatus;
 
-    @VisibleForTesting final transient ArrayList<AbstractAddress> addressesSubscribed;
-    @VisibleForTesting final transient ArrayList<AbstractAddress> addressesPendingSubscription;
-    @VisibleForTesting final transient Map<AbstractAddress, AddressStatus> statusPendingUpdates;
-    @VisibleForTesting final transient Map<Sha256Hash, Integer> fetchingTransactions;
-    @VisibleForTesting final transient Map<Integer, Long> blockTimes;
-    @VisibleForTesting final transient Map<Integer, Set<Sha256Hash>> missingTimestamps;
+    @VisibleForTesting
+    final transient ArrayList<Script> scriptSubscribed;
+    @VisibleForTesting
+    final transient ArrayList<Script> scriptPendingSubscription;
+    @VisibleForTesting
+    final transient Map<Script, ScriptStatus> statusPendingUpdates;
+    @VisibleForTesting
+    final transient Map<Sha256Hash, Integer> fetchingTransactions;
+    @VisibleForTesting
+    final transient Map<Integer, Long> blockTimes;
+    @VisibleForTesting
+    final transient Map<Integer, Set<Sha256Hash>> missingTimestamps;
+
     // Transactions that are waiting to be added once transactions that they depend on are added
     final transient Map<Sha256Hash, Map.Entry<BitTransaction, Set<Sha256Hash>>> outOfOrderTransactions;
 
@@ -99,8 +107,10 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
     // Pending:  Transactions that didn't make it into the best chain yet.
     // Confirmed:Transactions that appeared in the best chain.
 
-    @VisibleForTesting final Map<Sha256Hash, BitTransaction> pending;
-    @VisibleForTesting final Map<Sha256Hash, BitTransaction> confirmed;
+    @VisibleForTesting
+    final Map<Sha256Hash, BitTransaction> pending;
+    @VisibleForTesting
+    final Map<Sha256Hash, BitTransaction> confirmed;
 
     // All transactions together.
     final Map<Sha256Hash, BitTransaction> rawTransactions;
@@ -108,9 +118,11 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
     private List<ListenerRegistration<WalletAccountEventListener>> listeners;
 
     // Wallet that this account belongs
-    @Nullable private transient Wallet wallet = null;
+    @Nullable
+    private transient Wallet wallet = null;
 
-    @VisibleForTesting transient Value lastBalance;
+    @VisibleForTesting
+    transient Value lastBalance;
     transient WalletConnectivityStatus lastConnectivity = WalletConnectivityStatus.DISCONNECTED;
 
     private Runnable saveLaterRunnable = new Runnable() {
@@ -131,9 +143,9 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
     public TransactionWatcherWallet(CoinType coinType, String id) {
         super(coinType, id);
         unspentOutputs = new HashMap<>();
-        addressesStatus = new HashMap<>();
-        addressesSubscribed = new ArrayList<>();
-        addressesPendingSubscription = new ArrayList<>();
+        scriptsStatus = new HashMap<>();
+        scriptSubscribed = new ArrayList<>();
+        scriptPendingSubscription = new ArrayList<>();
         statusPendingUpdates = new HashMap<>();
         fetchingTransactions = new HashMap<>();
         blockTimes = new HashMap<>();
@@ -457,14 +469,16 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
             confirmed.clear();
             pending.clear();
             rawTransactions.clear();
-            addressesStatus.clear();
+            scriptsStatus.clear();
             clearTransientState();
         } finally {
             lock.unlock();
         }
     }
 
-    /** Returns the hash of the last seen best-chain block, or null if the wallet is too old to store this data. */
+    /**
+     * Returns the hash of the last seen best-chain block, or null if the wallet is too old to store this data.
+     */
     @Nullable
     public Sha256Hash getLastBlockSeenHash() {
         lock.lock();
@@ -570,53 +584,52 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
 
     /**
      * Sets that the specified status is currently updating i.e. getting transactions.
-     *
+     * <p>
      * Returns true if registered successfully or false if status already updating
      */
-    @VisibleForTesting boolean registerStatusForUpdate(AddressStatus status) {
+    @VisibleForTesting
+    boolean registerStatusForUpdate(ScriptStatus status) {
         checkNotNull(status.getStatus());
 
         lock.lock();
         try {
             // If current address is updating
-            if (statusPendingUpdates.containsKey(status.getAddress())) {
-                AddressStatus updatingAddressStatus = statusPendingUpdates.get(status.getAddress());
-                String updatingStatus = updatingAddressStatus.getStatus();
+            if (statusPendingUpdates.containsKey(status.getScript())) {
+                ScriptStatus updatingScriptStatus = statusPendingUpdates.get(status.getScript());
+                String updatingStatus = updatingScriptStatus.getStatus();
 
                 // If the same status is updating, don't update again
                 if (updatingStatus != null && updatingStatus.equals(status.getStatus())) {
                     return false;
                 } else { // Status is newer, so replace the updating status
-                    statusPendingUpdates.put(status.getAddress(), status);
+                    statusPendingUpdates.put(status.getScript(), status);
                     return true;
                 }
             } else { // This status is new
-                statusPendingUpdates.put(status.getAddress(), status);
+                statusPendingUpdates.put(status.getScript(), status);
                 return true;
             }
-        }
-        finally {
+        } finally {
             lock.unlock();
         }
     }
 
-    void commitAddressStatus(AddressStatus newStatus) {
+    void commitScriptStatus(ScriptStatus newStatus) {
         if (!newStatus.canCommitStatus()) {
-            log.warn("Tried to commit an address status with a non applied state: {}:{}",
-                    newStatus.getAddress(), newStatus.getStatus());
+            log.warn("Tried to commit an script status with a non applied state: {}:{}",
+                    newStatus.getScript(), newStatus.getStatus());
             return;
         }
 
         lock.lock();
         try {
-            AddressStatus updatingStatus = statusPendingUpdates.get(newStatus.getAddress());
+            ScriptStatus updatingStatus = statusPendingUpdates.get(newStatus.getScript());
             if (updatingStatus != null && updatingStatus.equals(newStatus)) {
-                statusPendingUpdates.remove(newStatus.getAddress());
+                statusPendingUpdates.remove(newStatus.getScript());
             }
-            addressesStatus.put(newStatus.getAddress(), newStatus.getStatus());
+            scriptsStatus.put(newStatus.getScript(), newStatus.getStatus());
             queueOnConnectivity();
-        }
-        finally {
+        } finally {
             lock.unlock();
         }
         // Skip saving null statuses
@@ -625,23 +638,22 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
         }
     }
 
-    private boolean isAddressStatusChanged(AddressStatus addressStatus) {
+    private boolean isScriptStatusChanged(ScriptStatus scriptStatus) {
         lock.lock();
         try {
-            AbstractAddress address = addressStatus.getAddress();
-            String newStatus = addressStatus.getStatus();
-            if (addressesStatus.containsKey(address)) {
-                String previousStatus = addressesStatus.get(address);
+            Script script = scriptStatus.getScript();
+            String newStatus = scriptStatus.getStatus();
+            if (this.scriptsStatus.containsKey(script)) {
+                String previousStatus = this.scriptsStatus.get(script);
                 if (previousStatus == null) {
                     return newStatus != null; // Status changed if newStatus is not null
                 } else {
                     return !previousStatus.equals(newStatus);
                 }
-            }
-            else {
+            } else {
                 // Unused address, just mark it that we watch it
                 if (newStatus == null) {
-                    commitAddressStatus(addressStatus);
+                    commitScriptStatus(scriptStatus);
                     return false;
                 } else {
                     return true;
@@ -653,31 +665,28 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
     }
 
     @Nullable
-    public AddressStatus getAddressStatus(AbstractAddress address) {
+    public ScriptStatus getScriptHashStatus(Script script) {
         lock.lock();
         try {
-            if (addressesStatus.containsKey(address)) {
-                return new AddressStatus(address, addressesStatus.get(address));
-            }
-            else {
+            if (scriptsStatus.containsKey(script)) {
+                return new ScriptStatus(script, scriptsStatus.get(script));
+            } else {
                 return null;
             }
-        }
-        finally {
+        } finally {
             lock.unlock();
         }
     }
 
-    public List<AddressStatus> getAllAddressStatus() {
+    public List<ScriptStatus> getAllScriptStatus() {
         lock.lock();
         try {
-            ArrayList<AddressStatus> statuses = new ArrayList<>(addressesStatus.size());
-            for (Map.Entry<AbstractAddress, String> status : addressesStatus.entrySet()) {
-                statuses.add(new AddressStatus(status.getKey(), status.getValue()));
+            ArrayList<ScriptStatus> statuses = new ArrayList<>(scriptsStatus.size());
+            for (Map.Entry<Script, String> status : scriptsStatus.entrySet()) {
+                statuses.add(new ScriptStatus(status.getKey(), status.getValue()));
             }
             return statuses;
-        }
-        finally {
+        } finally {
             lock.unlock();
         }
     }
@@ -685,29 +694,29 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
     /**
      * Returns all the addresses that are not currently watched
      */
-    @VisibleForTesting List<AbstractAddress> getAddressesToWatch() {
+    @VisibleForTesting
+    List<Script> getScriptToWatch() {
         lock.lock();
         try {
-            ImmutableList.Builder<AbstractAddress> addressesToWatch = ImmutableList.builder();
-            for (AbstractAddress address : getActiveAddresses()) {
+            ImmutableList.Builder<Script> scriptHashToWatch = ImmutableList.builder();
+            for (Script script : getActiveScripts()) {
                 // If address not already subscribed or pending subscription
-                if (!addressesSubscribed.contains(address) && !addressesPendingSubscription.contains(address)) {
-                    addressesToWatch.add(address);
+                if (!scriptSubscribed.contains(script) && !scriptPendingSubscription.contains(script)) {
+                    scriptHashToWatch.add(script);
                 }
             }
-            return addressesToWatch.build();
-        }
-        finally {
+            return scriptHashToWatch.build();
+        } finally {
             lock.unlock();
         }
     }
 
-    private void confirmAddressSubscription(AbstractAddress address) {
+    private void confirmScriptHashSubscription(Script script) {
         checkState(lock.isHeldByCurrentThread(), "Lock is held by another thread");
-        if (addressesPendingSubscription.contains(address)) {
-            log.debug("Subscribed to {}", address);
-            addressesPendingSubscription.remove(address);
-            addressesSubscribed.add(address);
+        if (scriptPendingSubscription.contains(script)) {
+            log.debug("Subscribed to {}", script);
+            scriptPendingSubscription.remove(script);
+            scriptSubscribed.add(script);
         }
     }
 
@@ -758,8 +767,7 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
         try {
             updateTransactionTimes(header);
             queueOnNewBlock();
-        }
-        finally {
+        } finally {
             lock.unlock();
         }
     }
@@ -767,7 +775,7 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
     private void updateTransactionTimes(BlockHeader header) {
         checkState(lock.isHeldByCurrentThread(), "Lock is held by another thread");
         Integer height = header.getBlockHeight();
-        Long timestamp = header.getTimestamp();
+        long timestamp = header.getTimestamp();
         boolean mustSave = false;
         blockTimes.put(height, timestamp);
         if (missingTimestamps.containsKey(height)) {
@@ -785,20 +793,20 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
     }
 
     @Override
-    public void onAddressStatusUpdate(AddressStatus status) {
+    public void onScriptStatusUpdate(ScriptStatus status) {
         log.debug("Got a status {}", status);
         lock.lock();
         try {
-            confirmAddressSubscription(status.getAddress());
+            confirmScriptHashSubscription(status.getScript());
             if (status.getStatus() != null) {
-                markAddressAsUsed(status.getAddress());
-                subscribeToAddressesIfNeeded();
+                markAddressAsUsed(status.getScript());
+                subscribeToScriptHashIfNeeded();
 
-                if (isAddressStatusChanged(status)) {
+                if (isScriptStatusChanged(status)) {
                     // Status changed, time to update
                     if (registerStatusForUpdate(status)) {
-                        log.info("Must get transactions for address {}, status {}",
-                                status.getAddress(), status.getStatus());
+                        log.info("Must get transactions for script {}, status {}",
+                                status.getScriptHash(), status.getStatus());
 
                         if (blockchainConnection != null) {
                             blockchainConnection.getUnspentTx(status, this);
@@ -808,43 +816,40 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
                         log.info("Status {} already updating", status.getStatus());
                     }
                 }
-            }
-            else {
+            } else {
                 // Address not used, just update the status
-                commitAddressStatus(status);
+                //statusPendingUpdates.put(status.getScript(), null);
+                commitScriptStatus(status);
                 tryToApplyState();
             }
-        }
-        finally {
+        } finally {
             lock.unlock();
         }
     }
 
     @Override
-    public void onUnspentTransactionUpdate(AddressStatus status, List<UnspentTx> unspentTxes) {
+    public void onUnspentTransactionUpdate(ScriptStatus status, List<UnspentTx> unspentTxes) {
         lock.lock();
         try {
-            AddressStatus updatingStatus = statusPendingUpdates.get(status.getAddress());
+            ScriptStatus updatingStatus = statusPendingUpdates.get(status.getScript());
             // Check if this updating status is valid
             if (updatingStatus != null && updatingStatus.equals(status)) {
                 updatingStatus.queueUnspentTransactions(unspentTxes);
                 fetchTransactionsIfNeeded(unspentTxes);
                 tryToApplyState(updatingStatus);
-            }
-            else {
+            } else {
                 log.info("Ignoring unspent tx call because no entry found or newer entry.");
             }
-        }
-        finally {
+        } finally {
             lock.unlock();
         }
     }
 
     @Override
-    public void onTransactionHistory(AddressStatus status, List<HistoryTx> historyTxes) {
+    public void onTransactionHistory(ScriptStatus status, List<HistoryTx> historyTxes) {
         lock.lock();
         try {
-            AddressStatus updatingStatus = statusPendingUpdates.get(status.getAddress());
+            ScriptStatus updatingStatus = statusPendingUpdates.get(status.getScript());
             // Check if this updating status is valid
             if (updatingStatus != null && updatingStatus.equals(status)) {
                 updatingStatus.queueHistoryTransactions(historyTxes);
@@ -853,8 +858,7 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
             } else {
                 log.info("Ignoring history tx call because no entry found or newer entry.");
             }
-        }
-        finally {
+        } finally {
             lock.unlock();
         }
     }
@@ -865,7 +869,7 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
     private void tryToApplyState() {
         lock.lock();
         try {
-            for (AddressStatus status : Lists.newArrayList(statusPendingUpdates.values())) {
+            for (ScriptStatus status : Lists.newArrayList(statusPendingUpdates.values())) {
                 tryToApplyState(status);
             }
         } finally {
@@ -876,10 +880,10 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
     /**
      * Try to apply the status state
      */
-    private void tryToApplyState(AddressStatus status) {
+    private void tryToApplyState(ScriptStatus status) {
         lock.lock();
         try {
-            if (statusPendingUpdates.containsKey(status.getAddress())) {
+            if (statusPendingUpdates.containsKey(status.getScript())) {
                 if (status.isUnspentTxQueued() && !status.isUnspentTxStateApplied()) {
                     Set<Sha256Hash> txHashes = status.getUnspentTxHashes();
                     HashMap<Sha256Hash, BitTransaction> txs = getTransactions(txHashes);
@@ -902,18 +906,21 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
         }
     }
 
-    private void applyUnspentState(AddressStatus status, HashMap<Sha256Hash, BitTransaction> txs) {
+    private void applyUnspentState(ScriptStatus status, HashMap<Sha256Hash, BitTransaction> txs) {
         checkState(lock.isHeldByCurrentThread(), "Lock is held by another thread");
         checkState(!status.isUnspentTxStateApplied(), "Unspent tx state already applied");
 
         // Get all the outputs that relate this this address, we will remove some of them if they
         // are not present in this status update
-        AbstractAddress address = status.getAddress();
         Set<TrimmedOutPoint> notPresentInStatus = new HashSet<>();
-        for (Map.Entry<TrimmedOutPoint, OutPointOutput> utxo : unspentOutputs.entrySet()) {
-            if (BitAddressUtils.producesAddress(utxo.getValue().getScriptPubKey(), address)) {
-                notPresentInStatus.add(utxo.getKey());
+        try {
+            for (Map.Entry<TrimmedOutPoint, OutPointOutput> utxo : unspentOutputs.entrySet()) {
+                if (status.getScript().equals(utxo.getValue().getScriptPubKey())) {
+                    notPresentInStatus.add(utxo.getKey());
+                }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         // Update all the unspent outputs in this status
@@ -947,11 +954,11 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
         }
 
         status.setUnspentTxStateApplied(true);
-        if (status.canCommitStatus()) commitAddressStatus(status);
+        if (status.canCommitStatus()) commitScriptStatus(status);
         queueOnNewBalance();
     }
 
-    private void applyHistoryState(AddressStatus status, HashMap<Sha256Hash, BitTransaction> txs) {
+    private void applyHistoryState(ScriptStatus status, HashMap<Sha256Hash, BitTransaction> txs) {
         checkState(lock.isHeldByCurrentThread(), "Lock is held by another thread");
         checkState(!status.isHistoryTxStateApplied(), "History tx state already applied");
 
@@ -962,7 +969,7 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
         }
 
         status.setHistoryTxStateApplied(true);
-        if (status.canCommitStatus()) commitAddressStatus(status);
+        if (status.canCommitStatus()) commitScriptStatus(status);
     }
 
     private void checkTxConfirmation(HistoryTx historyTx, BitTransaction tx) {
@@ -1010,7 +1017,8 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
         if (blockTimes.containsKey(height)) {
             tx.setTimestamp(blockTimes.get(height));
         } else {
-            if (log.isDebugEnabled()) log.debug("Must get timestamp for {} block on height {}", type.getName(), height);
+            if (log.isDebugEnabled())
+                log.debug("Must get timestamp for {} block on height {}", type.getName(), height);
             if (!missingTimestamps.containsKey(height)) {
                 missingTimestamps.put(height, new HashSet<Sha256Hash>());
                 missingTimestamps.get(height).add(tx.getHash());
@@ -1160,8 +1168,7 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
                 log.debug("Could not parse tx input script: {}", e.toString());
                 return false;
             }
-        }
-        finally {
+        } finally {
             lock.unlock();
         }
     }
@@ -1202,7 +1209,7 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
             this.blockchainConnection = (BitBlockchainConnection) blockchainConnection;
             clearTransientState();
             subscribeToBlockchain();
-            subscribeToAddressesIfNeeded();
+            subscribeToScriptHashIfNeeded();
             queueOnConnectivity();
         } finally {
             lock.unlock();
@@ -1235,14 +1242,24 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
         }
     }
 
-    void subscribeToAddressesIfNeeded() {
+    private void clearTransientState() {
+        checkState(lock.isHeldByCurrentThread(), "Lock is held by another thread");
+        scriptSubscribed.clear();
+        scriptPendingSubscription.clear();
+        statusPendingUpdates.clear();
+        fetchingTransactions.clear();
+        outOfOrderTransactions.clear();
+        lastBalance = type.value(0);
+    }
+
+    void subscribeToScriptHashIfNeeded() {
         lock.lock();
         try {
             if (blockchainConnection != null) {
-                List<AbstractAddress> addressesToWatch = getAddressesToWatch();
-                if (addressesToWatch.size() > 0) {
-                    addressesPendingSubscription.addAll(addressesToWatch);
-                    blockchainConnection.subscribeToAddresses(addressesToWatch, this);
+                List<Script> scriptToWatch = getScriptToWatch();
+                if (scriptToWatch.size() > 0) {
+                    scriptPendingSubscription.addAll(scriptToWatch);
+                    blockchainConnection.subscribeToScripts(scriptToWatch, this);
                     queueOnConnectivity();
                 }
             }
@@ -1251,16 +1268,6 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
         } finally {
             lock.unlock();
         }
-    }
-
-    private void clearTransientState() {
-        checkState(lock.isHeldByCurrentThread(), "Lock is held by another thread");
-        addressesSubscribed.clear();
-        addressesPendingSubscription.clear();
-        statusPendingUpdates.clear();
-        fetchingTransactions.clear();
-        outOfOrderTransactions.clear();
-        lastBalance = type.value(0);
     }
 
     /**
@@ -1421,10 +1428,18 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
     public boolean isLoading() {
         lock.lock();
         try {
-            return blockchainConnection != null && (addressesStatus.isEmpty() ||
-                    !addressesPendingSubscription.isEmpty() ||
+            boolean b = blockchainConnection != null && (scriptsStatus.isEmpty() ||
+                    !scriptPendingSubscription.isEmpty() ||
                     !statusPendingUpdates.isEmpty() ||
                     !fetchingTransactions.isEmpty());
+            System.out.println(
+                    " type=" + type.getSymbol() +
+                    ", isLoading= " + b +
+                    ", scriptsStatus="+ scriptsStatus.size() +
+                    ", scriptPendingSubscription="+ scriptPendingSubscription.size() +
+                    ", statusPendingUpdates="+ statusPendingUpdates.size() +
+                    ", fetchingTransactions="+ fetchingTransactions.size());
+            return b;
         } finally {
             lock.unlock();
         }
@@ -1508,7 +1523,6 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
         } finally {
             lock.unlock();
         }
-
     }
 
     Map<TrimmedOutPoint, OutPointOutput> getUnspentOutputs(boolean includeUnsafe) {
