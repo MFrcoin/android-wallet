@@ -53,6 +53,8 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import static com.mfcoin.core.wallet.TransactionWatcherWallet.TX_DEPTH_SAVE_THRESHOLD;
+
 /**
  * @author Andreas Schildbach
  */
@@ -258,7 +260,7 @@ public class TransactionsListAdapter extends BaseAdapter {
         }
 
         // Confirmations
-        if (tx.getDepthInBlocks() < 4) {
+        if (tx.getDepthInBlocks() < TX_DEPTH_SAVE_THRESHOLD) {
             rowConfirmationsFontIcon.setVisibility(View.VISIBLE);
             rowConfirmationsFontIcon.setTextColor(colorLessSignificant);
             switch (tx.getDepthInBlocks()) {
@@ -266,13 +268,15 @@ public class TransactionsListAdapter extends BaseAdapter {
                     rowConfirmationsFontIcon.setText(res.getString(R.string.font_icon_progress_empty));
                     rowConfirmationsFontIcon.setTextColor(colorInsignificant); // PENDING
                     break;
-                case 1: // 1 out of 3 confirmations
+                case 1: // 1-2  confirmations
+                case 2:
                     rowConfirmationsFontIcon.setText(res.getString(R.string.font_icon_progress_one));
                     break;
-                case 2: // 2 out of 3 confirmations
+                case 3: // 3-4 confirmations
+                case 4:
                     rowConfirmationsFontIcon.setText(res.getString(R.string.font_icon_progress_two));
                     break;
-                case 3: // 3 out of 3 confirmations
+                case 5: // 5confirmations
                     rowConfirmationsFontIcon.setText(res.getString(R.string.font_icon_progress_full));
                     break;
             }

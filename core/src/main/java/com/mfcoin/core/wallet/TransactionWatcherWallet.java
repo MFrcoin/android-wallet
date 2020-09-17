@@ -68,7 +68,7 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
         implements TransactionBag, BitTransactionEventListener {
     private static final Logger log = LoggerFactory.getLogger(TransactionWatcherWallet.class);
 
-    private final static int TX_DEPTH_SAVE_THRESHOLD = 4;
+    public final static int TX_DEPTH_SAVE_THRESHOLD = 6;
 
     boolean DISABLE_TX_TRIMMING = false;
 
@@ -722,7 +722,7 @@ abstract public class TransactionWatcherWallet extends AbstractWallet<BitTransac
             updateTransactionTimes(header);
             for (BitTransaction tx : rawTransactions.values()) {
                 // Save wallet when we have new TXs
-                if (tx.getDepthInBlocks() < TX_DEPTH_SAVE_THRESHOLD) shouldSave = true;
+                if (tx.getDepthInBlocks() <= TX_DEPTH_SAVE_THRESHOLD) shouldSave = true;
                 maybeUpdateBlockDepth(tx, true);
             }
             queueOnNewBlock();

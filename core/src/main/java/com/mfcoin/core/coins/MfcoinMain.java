@@ -1,7 +1,7 @@
 package com.mfcoin.core.coins;
 
-        import com.mfcoin.core.coins.families.BitFamily;
-        import com.mfcoin.core.coins.families.Families;
+import com.mfcoin.core.coins.families.BitFamily;
+import com.mfcoin.core.coins.families.Families;
 
 /**
  * @author John L. Jegutanis
@@ -13,7 +13,7 @@ public class MfcoinMain extends BitFamily {
         addressHeader = 51;
         p2shHeader = 5;
         acceptableAddressCodes = new int[]{addressHeader, p2shHeader};
-        spendableCoinbaseDepth = 60;
+        spendableCoinbaseDepth = 80;
         dumpedPrivateKeyHeader = 179;
 
         name = "MFCoin";
@@ -31,6 +31,7 @@ public class MfcoinMain extends BitFamily {
     }
 
     private static MfcoinMain instance = new MfcoinMain();
+
     public static synchronized CoinType get() {
         return instance;
     }
