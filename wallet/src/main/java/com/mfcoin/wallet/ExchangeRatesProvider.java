@@ -65,9 +65,11 @@ import javax.annotation.Nullable;
 public class ExchangeRatesProvider extends ContentProvider {
 
     public static class ExchangeRate {
-        @Nonnull public final ExchangeRateBase rate;
+        @Nonnull
+        public final ExchangeRateBase rate;
         public final String currencyCodeId;
-        @Nullable public final String source;
+        @Nullable
+        public final String source;
 
         public ExchangeRate(@Nonnull final ExchangeRateBase rate,
                             final String currencyCodeId, @Nullable final String source) {
@@ -108,8 +110,8 @@ public class ExchangeRatesProvider extends ContentProvider {
 
     private final String MFC_SYMBOL = "MFC";
     private final String MFC_RATES_URL = "https://explorer.mfcoin.net/api/stats/cmcdata";
-    private final String MFC_TOLOCAL_URL = MFC_RATES_URL + "/ticker_local";
-    private final String MFC_TOCRYPTO_URL = MFC_RATES_URL + "/ticker_crypto";
+    private final String MFC_TOLOCAL_URL = MFC_RATES_URL;// + "/ticker_local";
+    private final String MFC_TOCRYPTO_URL = MFC_RATES_URL;// + "/ticker_crypto";
 
     private static final String COINOMI_SOURCE = "coinomi.com";
     private static final String MFCMARKET_SOURCE = "mfc-market.ru";
@@ -142,16 +144,16 @@ public class ExchangeRatesProvider extends ContentProvider {
     }
 
     public static Uri contentUriToLocal(@Nonnull final String packageName,
-                                  @Nonnull final String coinSymbol,
-                                  final boolean offline) {
+                                        @Nonnull final String coinSymbol,
+                                        final boolean offline) {
         final Uri.Builder uri = contentUri(packageName, offline);
         uri.appendPath("to-local").appendPath(coinSymbol);
         return uri.build();
     }
 
     public static Uri contentUriToCrypto(@Nonnull final String packageName,
-                                  @Nonnull final String localSymbol,
-                                  final boolean offline) {
+                                         @Nonnull final String localSymbol,
+                                         final boolean offline) {
         final Uri.Builder uri = contentUri(packageName, offline);
         uri.appendPath("to-crypto").appendPath(localSymbol);
         return uri.build();
@@ -180,7 +182,7 @@ public class ExchangeRatesProvider extends ContentProvider {
     }
 
     public static Map<String, ExchangeRate> getRates(final Context context,
-                                              @Nonnull String localSymbol) {
+                                                     @Nonnull String localSymbol) {
         ImmutableMap.Builder<String, ExchangeRate> builder = ImmutableMap.builder();
 
         if (context != null) {
@@ -248,12 +250,15 @@ public class ExchangeRatesProvider extends ContentProvider {
 
             JSONObject mfcExchangeRatesJson = requestExchangeRatesJson(mfcUrl);
             if (mfcExchangeRatesJson != null) {
-                String mfcRate = mfcExchangeRatesJson.optString(symbol, null);
+                String mfcRate = mfcExchangeRatesJson
+                        .optJSONObject("data")
+                        .optJSONObject("3837")
+                        .optJSONObject("quote")
+                        .optJSONObject("USD").optString("price", null);
                 if (mfcRate != null && newExchangeRatesJson != null) {
                     try {
                         newExchangeRatesJson.put(MFC_SYMBOL, mfcRate);
-                    }
-                    catch (JSONException ex) {
+                    } catch (JSONException ex) {
                         log.warn("Exception while adding MFC rate", ex);
                     }
                 }

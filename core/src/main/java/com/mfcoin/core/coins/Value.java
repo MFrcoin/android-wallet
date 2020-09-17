@@ -3,13 +3,13 @@ package com.mfcoin.core.coins;
 /**
  * Copyright 2014 Andreas Schildbach
  * Copyright 2015 John L. Jegutanis
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -19,6 +19,7 @@ package com.mfcoin.core.coins;
 
 import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Monetary;
+
 import com.google.common.math.LongMath;
 
 import java.io.Serializable;
@@ -116,6 +117,7 @@ public class Value implements Monetary, Comparable<Value>, Serializable {
      */
     public static Value parse(final ValueType type, final BigDecimal decimal) {
         return Value.valueOf(type, decimal.movePointRight(type.getUnitExponent())
+                .setScale(0, BigDecimal.ROUND_HALF_EVEN)
                 .toBigIntegerExact().longValue());
     }
 
@@ -158,8 +160,8 @@ public class Value implements Monetary, Comparable<Value>, Serializable {
     }
 
     public Value[] divideAndRemainder(final long divisor) {
-        return new Value[] { new Value(this.type, this.value / divisor),
-                             new Value(this.type, this.value % divisor) };
+        return new Value[]{new Value(this.type, this.value / divisor),
+                new Value(this.type, this.value % divisor)};
     }
 
     public long divide(final Value divisor) {
@@ -298,7 +300,7 @@ public class Value implements Monetary, Comparable<Value>, Serializable {
      * Check if the value is within the [min, max] range
      */
     public boolean within(Value min, Value max) {
-        return compareTo(min) >=0 && compareTo(max) <= 0;
+        return compareTo(min) >= 0 && compareTo(max) <= 0;
     }
 
     public static Value max(Value value1, Value value2) {
