@@ -250,17 +250,21 @@ public class ExchangeRatesProvider extends ContentProvider {
 
             JSONObject mfcExchangeRatesJson = requestExchangeRatesJson(mfcUrl);
             if (mfcExchangeRatesJson != null) {
-                String mfcRate = mfcExchangeRatesJson
-                        .optJSONObject("data")
-                        .optJSONObject("3837")
-                        .optJSONObject("quote")
-                        .optJSONObject("USD").optString("price", null);
-                if (mfcRate != null && newExchangeRatesJson != null) {
-                    try {
-                        newExchangeRatesJson.put(MFC_SYMBOL, mfcRate);
-                    } catch (JSONException ex) {
-                        log.warn("Exception while adding MFC rate", ex);
+                try {
+                    String mfcRate = mfcExchangeRatesJson
+                            .optJSONObject("data")
+                            .optJSONObject("3837")
+                            .optJSONObject("quote")
+                            .optJSONObject("USD").optString("price", null);
+                    if (mfcRate != null && newExchangeRatesJson != null) {
+                        try {
+                            newExchangeRatesJson.put(MFC_SYMBOL, mfcRate);
+                        } catch (JSONException ex) {
+                            log.warn("Exception while adding MFC rate", ex);
+                        }
                     }
+                } catch (Exception e) {
+                    log.warn("Exception while parsing MFC rate", e);
                 }
             }
 
