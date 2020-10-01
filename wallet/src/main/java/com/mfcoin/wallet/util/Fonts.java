@@ -17,7 +17,6 @@ public class Fonts {
 
     public enum Font {
         COINOMI_FONT_ICONS("fonts/coinomi-font-icons.ttf");
-
         private final String fontPath;
 
         private Font(final String path) {

@@ -10,6 +10,7 @@ import com.mfcoin.core.wallet.AbstractWallet;
 import com.mfcoin.core.wallet.TransactionWatcherWallet;
 import com.google.common.collect.ImmutableList;
 
+import org.bitcoinj.core.Coin;
 import org.bitcoinj.core.Sha256Hash;
 import org.bitcoinj.core.Transaction;
 import org.bitcoinj.core.TransactionBag;
@@ -17,6 +18,7 @@ import org.bitcoinj.core.TransactionConfidence;
 import org.bitcoinj.core.TransactionInput;
 import org.bitcoinj.core.TransactionOutPoint;
 import org.bitcoinj.core.TransactionOutput;
+import org.bitcoinj.script.ScriptChunk;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,7 +46,8 @@ public final class BitTransaction implements AbstractTransaction {
     final Value valueSent;
     final Value valueReceived;
     final Value value;
-    @Nullable final Value fee;
+    @Nullable
+    final Value fee;
 
     public BitTransaction(Sha256Hash transactionId, Transaction transaction, boolean isTrimmed,
                           Value valueSent, Value valueReceived, @Nullable Value fee) {
@@ -77,6 +80,16 @@ public final class BitTransaction implements AbstractTransaction {
     public static BitTransaction fromTrimmed(Sha256Hash transactionId, Transaction transaction,
                                              Value valueSent, Value valueReceived, Value fee) {
         return new BitTransaction(transactionId, transaction, true, valueSent, valueReceived, fee);
+    }
+
+    @Override
+    public TransactionOutput getNVSOutput() {
+        for (TransactionOutput output : this.getOutputs()) {
+            if (output.getScriptPubKey().getChunks().size() == 12) {
+                return output;
+            }
+        }
+        return null;
     }
 
     @Override
@@ -152,7 +165,14 @@ public final class BitTransaction implements AbstractTransaction {
         if (isTrimmed) {
             return getValueReceived();
         } else {
-            return type.value(tx.getValueSentToMe(wallet));
+            Coin valueSentToMe = tx.getValueSentToMe(wallet);
+            TransactionOutput transactionOutput = getNVSOutput();
+            if (transactionOutput != null) {
+                if (wallet.getUnspentTxOutput(transactionOutput.getOutPointFor()) != null) {
+                    valueSentToMe = valueSentToMe.add(transactionOutput.getValue());
+                }
+            }
+            return type.value(valueSentToMe);
         }
     }
 
@@ -182,8 +202,22 @@ public final class BitTransaction implements AbstractTransaction {
 
                 // The connected output may be the change to the sender of a previous input sent to this wallet. In this
                 // case we ignore it.
-                if (!connected.getOutput().isMineOrWatched(wallet))
-                    continue;
+                if (!connected.getOutput().isMineOrWatched(wallet)) {
+                    //try to check that it's mine nvs output
+                    List<ScriptChunk> chunks = connected.getOutput().getScriptPubKey().getChunks();
+                    if (chunks.size() != 12) {
+                        continue;
+                    }
+                    ScriptChunk scriptChunk = chunks.get(9);
+                    try {
+                        if (!wallet.isAddressMine(BitAddress.from(type, scriptChunk.data))) {
+                            continue;
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        continue;
+                    }
+                }
 
                 sent = sent.add(connected.getValue());
             }
@@ -246,6 +280,9 @@ public final class BitTransaction implements AbstractTransaction {
         List<AbstractOutput> outputs = new ArrayList<>();
         for (TransactionOutput output : getOutputs(false)) {
             try {
+                if (output.isNull() || output.getScriptPubKey().getChunks().size() == 0) {
+                    continue; // skip empty pos output
+                }
                 AbstractAddress address = BitAddress.from(type, output.getScriptPubKey());
                 outputs.add(new AbstractOutput(address, type.value(output.getValue())));
             } catch (Exception e) { /* ignore this output */ }
@@ -271,6 +308,12 @@ public final class BitTransaction implements AbstractTransaction {
     @Override
     public boolean isGenerated() {
         return tx.isCoinBase() || tx.isCoinStake();
+    }
+
+    public boolean isPos() {
+        return tx.getOutputs().size() >= 2
+                && tx.getOutput(0).getValue().equals(Coin.ZERO)
+                && !tx.getInputs().get(0).isCoinBase();
     }
 
     @Override

@@ -99,12 +99,12 @@ public class BitWalletSingleKey extends BitWalletBase {
     }
 
     @Override
-    public List<AbstractAddress> getActiveAddresses() {
+    public List<Script> getActiveScripts() {
         lock.lock();
         try {
-            ImmutableList.Builder<AbstractAddress> activeAddresses = ImmutableList.builder();
+            ImmutableList.Builder<Script> activeAddresses = ImmutableList.builder();
             for (ECKey key : keys.getKeys()) {
-                activeAddresses.add(BitAddress.from(type, key));
+                //activeAddresses.add(BitAddress.from(type, key));
             }
             return activeAddresses.build();
         } finally {
@@ -113,7 +113,8 @@ public class BitWalletSingleKey extends BitWalletBase {
     }
 
     @Override
-    public void markAddressAsUsed(AbstractAddress address) { }
+    public void markAddressAsUsed(Script script) {
+    }
 
     @Override
     public boolean isEncryptable() {

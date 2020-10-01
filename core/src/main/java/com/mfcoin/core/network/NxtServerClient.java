@@ -2,7 +2,6 @@ package com.mfcoin.core.network;
 
 import com.mfcoin.core.coins.CoinType;
 import com.mfcoin.core.coins.nxt.Convert;
-import com.mfcoin.core.wallet.AbstractAddress;
 import com.mfcoin.core.coins.nxt.NxtException;
 import com.mfcoin.core.coins.nxt.TransactionImpl;
 import com.mfcoin.core.network.interfaces.BlockchainConnection;
@@ -23,6 +22,7 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.FormEncodingBuilder;
 
 import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.script.Script;
 import org.bitcoinj.utils.Threading;
 import org.bitcoinj.utils.ListenerRegistration;
 
@@ -51,6 +51,8 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
  * @author vbcs
  * @author John L. Jegutanis
  */
+
+//TODO this implementation is dummy stub!
 public class NxtServerClient implements BlockchainConnection<NxtTransaction> {
 
     private static final int POLL_INTERVAL_SEC = 30;
@@ -144,10 +146,10 @@ public class NxtServerClient implements BlockchainConnection<NxtTransaction> {
         return builder.toString();
     }
 
-    private String getAccountInfo(AbstractAddress address) {
+    private String getAccountInfo(Script script) {
         StringBuilder builder = new StringBuilder();
         builder.append(getBaseUrl()).append(GET_REQUEST).append(GET_ACCOUNT)
-        .append("&account=").append(address.toString());
+        .append("&account=").append(script.toString());
         return builder.toString();
     }
 
@@ -313,20 +315,20 @@ public class NxtServerClient implements BlockchainConnection<NxtTransaction> {
         Raises onAddressStatusUpdate if changed.
          */
     @Override
-    public void subscribeToAddresses(List<AbstractAddress> addresses,
+    public void subscribeToScripts(List<Script> scripts,
                                      final TransactionEventListener<NxtTransaction> listener) {
         if (addressSubscription != null) {
             addressSubscription.shutdownNow();
         }
         addressSubscription = Executors.newSingleThreadScheduledExecutor();
-        for (final AbstractAddress address : addresses) {
-            log.info("Going to subscribe to {}", address);
+        for (final Script script : scripts) {
+            log.info("Going to subscribe to {}", script);
 
             addressSubscription.scheduleAtFixedRate(new Runnable() {
                 @Override
                 public void run() {
 
-                    Request request = new Request.Builder().url(getAccountInfo(address)).build();
+                    Request request = new Request.Builder().url(getAccountInfo(script)).build();
                     getHttpClient().newCall(request).enqueue(new Callback() {
                         @Override
                         public void onFailure(Request request, IOException e) {
@@ -338,18 +340,18 @@ public class NxtServerClient implements BlockchainConnection<NxtTransaction> {
                         public void onResponse(Response response) throws IOException {
                             try {
                                 if (!response.isSuccessful()) {
-                                    log.info("Unable to check address status.");
+                                    log.info("Unable to check script status.");
                                     log.info("[Error code] = " + response.code() );
                                 }
                                 JSONObject reply = parseReply(response);
                                 String status = reply.getString("unconfirmedBalanceNQT");
-                                AddressStatus addressStatus = new AddressStatus(address,status);
+                                ScriptStatus scriptStatus = new ScriptStatus(script, status);
 
                                 if (!lastBalance.equals(status)) {
                                     lastBalance = status;
-                                    listener.onAddressStatusUpdate(addressStatus);
+                                    listener.onScriptStatusUpdate(scriptStatus);
                                 }
-                                //listener.onAddressStatusUpdate(addressStatus);
+                                //listener.onAddressStatusUpdate(scriptStatus);
 
                             } catch (IOException e) {
                                 log.info("IOException: " + e.getMessage());
@@ -369,16 +371,16 @@ public class NxtServerClient implements BlockchainConnection<NxtTransaction> {
         Only call it when account's balance has changed
      */
     @Override
-    public void getHistoryTx(final AddressStatus status, final TransactionEventListener listener) {
+    public void getHistoryTx(final ScriptStatus status, final TransactionEventListener listener) {
 
         ScheduledExecutorService exec = Executors.newSingleThreadScheduledExecutor();
         exec.scheduleAtFixedRate(new Runnable() {
             @Override
             public void run() {
-                log.info("Going to fetch txs for {}", status.getAddress().toString());
+                log.info("Going to fetch txs for {}", status.getScriptHash());
 
                 Request request = new Request.Builder().url(
-                        getBlockChainTxsUrl(status.getAddress().toString())).build();
+                        getBlockChainTxsUrl(status.getScriptHash())).build();
                 getHttpClient().newCall(request).enqueue(new Callback() {
                     @Override
                     public void onFailure(Request request, IOException e) {

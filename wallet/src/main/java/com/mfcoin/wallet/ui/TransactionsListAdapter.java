@@ -44,6 +44,7 @@ import com.mfcoin.wallet.util.WalletUtils;
 
 import org.bitcoinj.core.TransactionConfidence;
 import org.bitcoinj.core.TransactionConfidence.ConfidenceType;
+import org.bitcoinj.core.TransactionOutput;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -52,6 +53,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+
+import static com.mfcoin.core.wallet.TransactionWatcherWallet.TX_DEPTH_SAVE_THRESHOLD;
 
 /**
  * @author Andreas Schildbach
@@ -73,6 +76,8 @@ public class TransactionsListAdapter extends BaseAdapter {
     private final int colorError;
     private final int colorCircularBuilding = Color.parseColor("#44ff44");
     private final String minedTitle;
+    private final String stakeTitle;
+    private final String nvsTitle;
     private final String fontIconMined;
     private final String sentToTitle;
     private final String fontIconSentTo;
@@ -101,6 +106,8 @@ public class TransactionsListAdapter extends BaseAdapter {
         colorInsignificant = res.getColor(R.color.gray_26_hint_text);
         colorError = res.getColor(R.color.fg_error);
         minedTitle = res.getString(R.string.wallet_transactions_coinbase);
+        stakeTitle = res.getString(R.string.wallet_transactions_stake);
+        nvsTitle = res.getString(R.string.wallet_nvs);
         fontIconMined = res.getString(R.string.font_icon_mining);
         sentToTitle = res.getString(R.string.sent_to);
         fontIconSentTo = res.getString(R.string.font_icon_send_coins);
@@ -258,7 +265,7 @@ public class TransactionsListAdapter extends BaseAdapter {
         }
 
         // Confirmations
-        if (tx.getDepthInBlocks() < 4) {
+        if (tx.getDepthInBlocks() < TX_DEPTH_SAVE_THRESHOLD) {
             rowConfirmationsFontIcon.setVisibility(View.VISIBLE);
             rowConfirmationsFontIcon.setTextColor(colorLessSignificant);
             switch (tx.getDepthInBlocks()) {
@@ -266,13 +273,15 @@ public class TransactionsListAdapter extends BaseAdapter {
                     rowConfirmationsFontIcon.setText(res.getString(R.string.font_icon_progress_empty));
                     rowConfirmationsFontIcon.setTextColor(colorInsignificant); // PENDING
                     break;
-                case 1: // 1 out of 3 confirmations
+                case 1: // 1-2  confirmations
+                case 2:
                     rowConfirmationsFontIcon.setText(res.getString(R.string.font_icon_progress_one));
                     break;
-                case 2: // 2 out of 3 confirmations
+                case 3: // 3-4 confirmations
+                case 4:
                     rowConfirmationsFontIcon.setText(res.getString(R.string.font_icon_progress_two));
                     break;
-                case 3: // 3 out of 3 confirmations
+                case 5: // 5confirmations
                     rowConfirmationsFontIcon.setText(res.getString(R.string.font_icon_progress_full));
                     break;
             }
@@ -281,8 +290,9 @@ public class TransactionsListAdapter extends BaseAdapter {
         }
 
         // Money direction and icon
-        if (tx.isGenerated()) {
-            rowDirectionText.setText(minedTitle);
+        TransactionOutput nvsOutput = tx.getNVSOutput();
+        if ((tx.isGenerated() || tx.isPos()) && nvsOutput == null) {
+            rowDirectionText.setText(tx.isPos() ? stakeTitle : minedTitle);
             rowDirectionFontIcon.setText(fontIconMined);
         } else {
             if (value.isNegative()) {
@@ -294,6 +304,9 @@ public class TransactionsListAdapter extends BaseAdapter {
             } else {
                 rowDirectionText.setText(receivedFromTitle);
                 rowDirectionFontIcon.setText(fontIconReceivedWith);
+            }
+            if (nvsOutput != null) {
+                rowDirectionText.setText(nvsTitle);
             }
         }
 

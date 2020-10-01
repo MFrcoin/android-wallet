@@ -12,16 +12,21 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.google.common.collect.ImmutableSet;
 import com.mfcoin.core.coins.CoinType;
+import com.mfcoin.core.exceptions.AddressMalformedException;
 import com.mfcoin.core.wallet.AbstractAddress;
 import com.mfcoin.core.wallet.SignedMessage;
 import com.mfcoin.core.wallet.WalletAccount;
+import com.mfcoin.core.wallet.families.bitcoin.BitAddress;
+import com.mfcoin.core.wallet.families.bitcoin.BitTransaction;
 import com.mfcoin.wallet.Constants;
 import com.mfcoin.wallet.R;
 import com.mfcoin.wallet.WalletApplication;
 import com.mfcoin.wallet.tasks.SignVerifyMessageTask;
 import com.mfcoin.wallet.util.Keyboard;
 
+import org.bitcoinj.script.Script;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +54,7 @@ public class SignVerifyMessageFragment extends Fragment {
     private Button signButton;
     private TextView signatureOK;
     private TextView signatureError;
-    private WalletAccount account;
+    private WalletAccount<BitTransaction, BitAddress> account;
     private CoinType type;
     private WalletApplication application;
     private SignVerifyMessageTask signVerifyMessageTask;
@@ -68,7 +73,6 @@ public class SignVerifyMessageFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
-
 
 
     public SignVerifyMessageFragment() {
@@ -98,8 +102,17 @@ public class SignVerifyMessageFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_sign_message, container, false);
 
         signingAddressView = (AutoCompleteTextView) view.findViewById(R.id.signing_address);
-        ArrayAdapter<AbstractAddress> adapter = new ArrayAdapter<>(getActivity(), R.layout.item_simple,
-                account.getActiveAddresses());
+
+        ImmutableSet.Builder<AbstractAddress> addresses = ImmutableSet.builder();
+        for (Script activeScript : account.getActiveScripts()) {
+            try {
+                addresses.add(BitAddress.from(type, activeScript));
+            } catch (AddressMalformedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        ArrayAdapter<AbstractAddress> adapter = new ArrayAdapter<>(getActivity(), R.layout.item_simple, addresses.build().asList());
         signingAddressView.setAdapter(adapter);
 
         messageView = (EditText) view.findViewById(R.id.message);

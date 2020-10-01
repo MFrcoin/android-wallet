@@ -23,9 +23,9 @@
  * - To regenerate after editing, run: mvn generate-sources -DupdateProtobuf
  */
 
-package com.coinomi.core.protos;
+package com.mfcoin.core.protos;
 
-option java_package = "com.coinomi.core.protos";
+option java_package = "com.mfcoin.core.protos";
 
 option java_outer_classname = "Protos";
 
@@ -263,8 +263,12 @@ message Transaction {
     // Next tag: 19
 }
 
-message AddressStatus {
-    required string address = 1; // The address that the wallet watches
+message Script {
+
+}
+
+message ScriptStatus {
+    required Script script = 1; // The scriptHash that the wallet watches
     required string status = 2; // The address status
 }
 
@@ -285,7 +289,7 @@ message WalletPocket {
 
     repeated Transaction transaction = 7;
 
-    repeated AddressStatus address_status = 8;
+    repeated ScriptStatus script_status = 8;
 
     optional string id = 9;
 

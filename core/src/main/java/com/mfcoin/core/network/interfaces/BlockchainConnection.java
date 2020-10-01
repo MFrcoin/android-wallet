@@ -1,9 +1,9 @@
 package com.mfcoin.core.network.interfaces;
 
-import com.mfcoin.core.network.AddressStatus;
-import com.mfcoin.core.wallet.AbstractAddress;
+import com.mfcoin.core.network.ScriptStatus;
 
 import org.bitcoinj.core.Sha256Hash;
+import org.bitcoinj.script.Script;
 
 import java.util.List;
 
@@ -17,10 +17,10 @@ public interface BlockchainConnection<T> {
 
     void subscribeToBlockchain(final TransactionEventListener<T> listener);
 
-    void subscribeToAddresses(List<AbstractAddress> addresses,
-                              TransactionEventListener<T> listener);
+    void subscribeToScripts(List<Script> scripts,
+                            TransactionEventListener<T> listener);
 
-    void getHistoryTx(AddressStatus status, TransactionEventListener<T> listener);
+    void getHistoryTx(ScriptStatus status, TransactionEventListener<T> listener);
 
     void getTransaction(Sha256Hash txHash, TransactionEventListener<T> listener);
 
@@ -39,6 +39,4 @@ public interface BlockchainConnection<T> {
     boolean isActivelyConnected();
 
     void startAsync();
-
-
 }
