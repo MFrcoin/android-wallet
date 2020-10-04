@@ -175,7 +175,7 @@
     <string name="about_credits_nubits">服务器由Nubits提供-NBT是世界上首个价格稳定的数字货币\nhttps://nubits.com/</string>
     <string name="about_credits_translations">翻译者：</string>
     <string name="about_credits_bitcoinj">使用Bitcoinj库\nhttp://bitcoinj.github.io/</string>
-    <string name="about_credits_electrum">使用Electrum 服务器软件\nhttps://electrum.org/</string>
+    <string name="about_credits_electrum">使用ElectrumX 服务器软件\nhttps://github.com/kyuupichan/electrumx</string>
     <string name="about_credits_schildbach">" Andreas Schildbach有贡献\nhttps://github.com/schildbach/bitcoin-wallet/"</string>
     <string name="about_credits_zxing">QR-code由 ZXing开发\nhttps://github.com/zxing/zxing</string>
     <string name="about_credits_crypto_icons">图标由 Chris Shepherd设计 \nhttps://github.com/shphrd/crypto-icons</string>

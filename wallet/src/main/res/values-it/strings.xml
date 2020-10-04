@@ -177,7 +177,7 @@
     <string name="about_credits_nubits">Server infrastructure donated by NuBits - The World\'s First Stable Digital Currency\nhttps://nubits.com/</string>
     <string name="about_credits_translations">Traduzione fornita da:</string>
     <string name="about_credits_bitcoinj">Usa la biblioteca Bitcoinj\nhttp://bitcoinj.github.io/</string>
-    <string name="about_credits_electrum">Usa il server software Electrum \nhttps://electrum.org/</string>
+    <string name="about_credits_electrum">Usa il server software ElectrumX \nhttps://github.com/kyuupichan/electrumx</string>
     <string name="about_credits_schildbach">Ispirato da Andreas Schildbach\nhttps://github.com/schildbach/bitcoin-wallet/</string>
     <string name="about_credits_zxing">Funzionalità QR-code da ZXing\nhttps://github.com/zxing/zxing</string>
     <string name="about_credits_crypto_icons">Icone crittografiche da Chris Shepherd\nhttps://github.com/shphrd/crypto-icons</string>

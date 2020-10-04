@@ -175,7 +175,7 @@
     <string name="about_credits_nubits">サーバのインフラはNuBits - 世界初の安定したデジタル通貨 - の寄付により成り立っています\nhttps://nubits.com/</string>
     <string name="about_credits_translations">翻訳提供者:</string>
     <string name="about_credits_bitcoinj">Bitcoinjライブラリを使用しています\nhttp://bitcoinj.github.io/</string>
-    <string name="about_credits_electrum">Electrumのサーバソフトウェアを使用しています\nhttps://electrum.org/</string>
+    <string name="about_credits_electrum">ElectrumXのサーバソフトウェアを使用しています\nhttps://github.com/kyuupichan/electrumx</string>
     <string name="about_credits_schildbach">Andreas Schildbach氏の影響を受けています\nhttps://github.com/schildbach/bitcoin-wallet/</string>
     <string name="about_credits_zxing">QRコードの機能はZXing氏によるものです\nhttps://github.com/zxing/zxing</string>
     <string name="about_credits_crypto_icons">暗号通貨のアイコンはChris Shepherd氏によるものです\nhttps://github.com/shphrd/crypto-icons</string>

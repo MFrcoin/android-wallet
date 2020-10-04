@@ -58,7 +58,7 @@
     <string name="navigation_drawer_services">Сервис</string>
     <string name="navigation_drawer_wallet">Кошелёк</string>
     <!-- SendOutput widget -->
-    <string name="fee">налог на транзакцию</string>
+    <string name="fee">Комиссия за транзакцию</string>
     <string name="send">отправить</string>
     <string name="trade">обмен</string>
     <string name="receive">получить</string>
@@ -134,7 +134,7 @@
     <string name="amount_error_too_small">Минимальная сумма %1$s</string>
     <string name="amount_error_not_enough_money_plain">Недостаточно денег</string>
     <string name="amount_error_not_enough_money">Недостаточно денег, Ваш текущий баланс %1$s</string>
-    <string name="amount_warn_fees_apply">Будет отправлено немного меньше по причине оплаты налогов</string>
+    <string name="amount_warn_fees_apply">Будет отправлено немного меньше из-за комиссии</string>
     <!-- Set Password fragment -->
     <string name="set_password_info">Установите пароль для защиты Вашего кошелька в ежедневном применении.</string>
     <string name="set_password1">Введите Ваш пароль</string>
@@ -181,7 +181,7 @@
     <string name="about_credits_nubits">Инфраструктура серверов предоставлена NuBits - Первой Всемирной Стабильной Цифровой Валютой \nhttps://nubits.com/</string>
     <string name="about_credits_translations">Переводы выполнили:</string>
     <string name="about_credits_bitcoinj">Используется библиотека Bitcoinj\nhttp://bitcoinj.github.io/</string>
-    <string name="about_credits_electrum">Используется серверное ПО от Electrum\nhttps://electrum.org/</string>
+    <string name="about_credits_electrum">Используется серверное ПО от ElectrumX\nhttps://github.com/kyuupichan/electrumx</string>
     <string name="about_credits_schildbach">Под влиянием работы Andreas Schildbach\nhttps://github.com/schildbach/bitcoin-wallet/</string>
     <string name="about_credits_zxing">QR-код сканер от ZXing\nhttps://github.com/zxing/zxing</string>
     <string name="about_credits_crypto_icons">Иконки криптовалюты от Chris Shepherd\nhttps://github.com/shphrd/crypto-icons</string>
@@ -220,7 +220,7 @@
     <string name="exchange_rates_load_error">Не удалось загрузить курсы валют</string>
     <string name="exchange_rates_empty_search">Невозможно найти обменный курс</string>
     <!-- Select Coins -->
-    <string name="select_coins">Выберите валюту , которую желаете употребить в Вашем кошельке. Вы всегда можете добавить и другие позже.</string>
+    <string name="select_coins">Выберите валюту, которую желаете использовать. Вы всегда можете добавить и другие позже.</string>
     <!-- Previous Addresses -->
     <string name="title_activity_previous_addresses">Мои предыдущие адреса</string>
     <string name="previous_addresses_used">Использованный адрес</string>

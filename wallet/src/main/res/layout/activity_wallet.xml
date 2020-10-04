@@ -8,6 +8,14 @@
     android:layout_height="match_parent"
     tools:context=".WalletActivity">
 
+    <ImageView
+        android:id="@+id/imageView4"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:scaleType = "centerCrop"
+        android:src="@drawable/background" />
+
     <FrameLayout
         android:id="@+id/contents"
         android:layout_width="match_parent"

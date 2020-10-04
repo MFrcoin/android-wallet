@@ -178,7 +178,7 @@
     <string name="about_credits_nubits">Οι κεντρικοί εξυπηρετητές είναι μια προσφορά της NuBits\nhttps://nubits.com/</string>
     <string name="about_credits_translations">Μεταφράσεις από τους:</string>
     <string name="about_credits_bitcoinj">Χρησιμοποιείται η βιβλιοθήκη Bitcoinj\nhttp://bitcoinj.github.io/</string>
-    <string name="about_credits_electrum">Χρησιμοποιείται λογισμικό του εξυπηρετητή Electrum\nhttps://electrum.org/</string>
+    <string name="about_credits_electrum">Χρησιμοποιείται λογισμικό του εξυπηρετητή ElectrumX\nhttps://github.com/kyuupichan/electrumx</string>
     <string name="about_credits_schildbach">Επηρεασμένο από τη δουλειά του Andreas Schildbach \nhttps://github.com/schildbach/bitcoin-wallet/</string>
     <string name="about_credits_zxing">Λειτουργία QR-code από τον ZXing\nhttps://github.com/zxing/zxing</string>
     <string name="about_credits_crypto_icons">Εικονίδια κρυπτονομισμάτων από τον Chris Shepherd\nhttps://github.com/shphrd/crypto-icons</string>
